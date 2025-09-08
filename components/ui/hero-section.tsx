@@ -15,7 +15,7 @@ export default function HeroSection() {
           alt="Hero Background"
           fill
           priority
-          className="object-cover"
+          className="object-cover"            
         />
         {/* Overlay gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
@@ -54,7 +54,7 @@ export default function HeroSection() {
               </Button>
               <Button
                 variant="outline"
-                className="px-6 py-3 text-lg rounded-2xl border-white text-white hover:bg-white/10"
+                className="px-6 py-3 text-lg rounded-2xl border-white text-black hover:bg-white/10"
               >
                 Hubungi Kami
               </Button>
@@ -69,9 +69,9 @@ export default function HeroSection() {
             className="flex justify-center lg:justify-end"
           >
             <Image
-              src="/pilar (2).png"
+              src="/bem.png"
               alt="BEM IT DEL Logo"
-              width={400}
+              width={300}
               height={400}
               className="hidden rounded-2xl absolute bottom-20 right-5 lg:flex"
             />

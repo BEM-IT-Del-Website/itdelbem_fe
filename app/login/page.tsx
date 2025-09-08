@@ -112,14 +112,12 @@ export default function LoginPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">Username</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
                     id="email" 
-                    type="text" 
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    type="email" 
                     placeholder="your.email@university.edu"
                     className="pl-10"
                   />

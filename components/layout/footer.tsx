@@ -9,8 +9,8 @@ export default function Footer() {
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center mb-4">
-              <div className="w-8 h-8 bg-[#3B82F6] rounded-lg flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-sm">B</span>
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-3">
+                <img src="bem.png" alt="BEM" />
               </div>
               <span className="text-xl font-bold">BEM 2024</span>
             </div>
@@ -35,7 +35,7 @@ export default function Footer() {
           <div>
             <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-300 hover:text-[#3B82F6] transition-colors">Homepage</Link></li>
+              <li><Link href="/" className="text-gray-300 hover:text-[#3B82F6] transition-colors">Home</Link></li>
               <li><Link href="/organization" className="text-gray-300 hover:text-[#3B82F6] transition-colors">Organization</Link></li>
               <li><Link href="/articles" className="text-gray-300 hover:text-[#3B82F6] transition-colors">Articles</Link></li>
               <li><Link href="/announcements" className="text-gray-300 hover:text-[#3B82F6] transition-colors">Announcements</Link></li>

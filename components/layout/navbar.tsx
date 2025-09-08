@@ -42,26 +42,18 @@ export default function Navbar() {
   }, [isOpen]);
 
   return (
-    <>
-      <nav className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled 
-          ? 'bg-white/95 backdrop-blur-lg shadow-xl' 
-          : 'bg-white shadow-lg'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            {/* Logo */}
-            <div className="flex items-center">
-              <Link href="/" className="flex-shrink-0 flex items-center group">
-                <div className="w-10 h-10 bg-[#1c46b9] rounded-lg flex items-center justify-center mr-3 transition-transform duration-300 group-hover:scale-105">
-                  <span className="text-white font-bold text-lg">B</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xl font-bold text-gray-900">BEM IT DEL</span>
-                  <span className="text-xs text-gray-500 -mt-1">Maju Bersama</span>
-                </div>
-              </Link>
-            </div>
+    <nav className="bg-white shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="flex-shrink-0 flex items-center">
+              <div className="w-8 h-8 bg-[#3B82F6] rounded-lg flex items-center justify-center mr-3">
+                <span className="text-white font-bold text-sm">B</span>
+              </div>
+              <span className="text-xl font-bold text-gray-900">BEM 2024</span>
+            </Link>
+          </div>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-6">
