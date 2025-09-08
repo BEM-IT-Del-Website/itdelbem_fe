@@ -9,4 +9,6 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Announcements', href: '/announcements' },
   { label: 'Contact', href: '/contact' },
   { label: 'Login', href: '/login' },
+  { label: 'Dashboard', href: '/admin/dashboard' },
+
 ];

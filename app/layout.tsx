@@ -1,14 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Navbar from '@/components/layout/navbar';
-import Footer from '@/components/layout/footer';
+import LayoutWrapper from '@/components/layout/layout-auth';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'BEM 2024 - Badan Eksekutif Mahasiswa',
-  description: 'Badan Eksekutif Mahasiswa 2024-2025 - Bersama Mewujudkan Aksi, Prestasi, dan Kolaborasi',
+  description:
+    'Badan Eksekutif Mahasiswa 2024-2025 - Bersama Mewujudkan Aksi, Prestasi, dan Kolaborasi',
 };
 
 export default function RootLayout({
@@ -19,13 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-grow">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );
