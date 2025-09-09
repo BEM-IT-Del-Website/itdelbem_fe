@@ -24,34 +24,42 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8080/api/auth/campus/login', {
+      let res = await fetch('http://localhost:8080/api/auth/campus/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password }),
       });
 
+      if (!res.ok) {
+        res = await fetch('http://localhost:8080/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: email, password }),
+        });
+      }
+
       if (!res.ok) throw new Error('Login failed');
       const data = await res.json();
 
       localStorage.setItem('token', data.token);
-      console.log(data.user.position);
 
-      // redirect sesuai position
-      if (data.position === 'admin') {
+      if (data.user.position === 'admin') {
         router.push('/admin/dashboard');
-      } else if (data.position === 'student') {
+      } else if (data.user.position === 'student') {
         router.push('/student/home');
-      } else if (data.position === 'lecturer') {
+      } else if (data.user.position === 'lecturer') {
         router.push('/lecturer/home');
       } else {
         router.push('/');
       }
+
     } catch (err) {
       console.error(err);
       alert('Login gagal, cek username/password!');
     } finally {
       setLoading(false);
     }
+
   };
 
   return (
@@ -117,8 +125,10 @@ export default function LoginPage() {
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                   <Input 
                     id="email" 
-                    type="email" 
-                    placeholder="your.email@university.edu"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="text" 
+                    placeholder="Username"
                     className="pl-10"
                   />
                 </div>
