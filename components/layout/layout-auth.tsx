@@ -8,7 +8,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   const pathname = usePathname();
 
   // Halaman yang tidak menampilkan Navbar & Footer
-  const hiddenLayoutRoutes = ["/auth/login", "/register"];
+  const hiddenLayoutRoutes = ["/auth/login", "/admin/dashboard"];
 
   const isHiddenLayout = hiddenLayoutRoutes.includes(pathname);
 
