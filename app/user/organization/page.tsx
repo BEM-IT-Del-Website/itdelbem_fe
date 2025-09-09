@@ -100,7 +100,7 @@ export default function OrganizationPage() {
                   </div>
                   {/* Text */}
                   <span className="text-[1.2em] font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
-                    Institut Teknologi Del
+                    Institut Teknologi Bandung
                   </span>
                 </motion.div>
               </div>
