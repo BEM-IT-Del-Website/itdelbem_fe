@@ -1,14 +1,14 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import LayoutWrapper from '@/components/layout/layout-auth';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import LayoutWrapper from "@/components/layout/layout-auth";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'BEM 2024 - Badan Eksekutif Mahasiswa',
+  title: "BEM 2024 - Badan Eksekutif Mahasiswa",
   description:
-    'Badan Eksekutif Mahasiswa 2024-2025 - Bersama Mewujudkan Aksi, Prestasi, dan Kolaborasi',
+    "Badan Eksekutif Mahasiswa 2024-2025 - Bersama Mewujudkan Aksi, Prestasi, dan Kolaborasi",
 };
 
 export default function RootLayout({
