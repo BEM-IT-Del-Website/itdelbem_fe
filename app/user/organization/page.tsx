@@ -1,3 +1,4 @@
+'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from "@/components/ui/progress";
 import { Users, Target, Calendar, Award, Briefcase, User, Star, Sparkles } from 'lucide-react';

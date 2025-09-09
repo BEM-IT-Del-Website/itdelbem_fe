@@ -79,7 +79,7 @@ export default function Navbar() {
                 asChild
                 className="bg-[#1c46b9] hover:bg-[#1c46b9]/90 text-white px-6 py-2 rounded-lg transition-colors duration-200"
               >
-                <Link href="/login">
+                <Link href="/auth/login">
                   <User className="w-4 h-4 mr-2" />
                   Login
                 </Link>
