@@ -17,6 +17,7 @@ export default function AnnouncementsPage() {
       location: "Various Exam Halls",
       category: "Academic"
     },
+    
     {
       id: 2,
       title: "Summer Internship Application Deadline Extended",

@@ -14,7 +14,6 @@ const navIcons = {
   '/articles': { icon: FileText, label: 'Berita' },
   '/announcements': { icon: Megaphone, label: 'Pengumuman' },
   '/contact': { icon: Mail, label: 'Kontak' },
-  '/login': { icon: User, label: 'Login' },
 };
 
 export default function Navbar() {
