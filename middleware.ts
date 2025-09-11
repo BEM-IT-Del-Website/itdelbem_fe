@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Kalau buka halaman admin tapi belum login
-  if (pathname.startsWith("/admin/dashboard") && !token) {
+  if (pathname.startsWith("/ajkhsdkhd") && !token) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
