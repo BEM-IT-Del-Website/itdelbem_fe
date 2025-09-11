@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Eye, EyeOff, User, Lock, Mail, Phone, Calendar, GraduationCap } from 'lucide-react';
+import { Eye, EyeOff, User, Lock, Mail, Phone, Calendar, GraduationCap, LogOut } from 'lucide-react';
+import { Title } from '@radix-ui/react-toast';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -64,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#3B82F6] via-[#2563EB] to-[#1D4ED8] flex items-center justify-center py-20">
+    <div className="min-h-screen bg-gradient-to-br from-[#1E40AF] via-[#3B82F6] to-[#60A5FA] flex items-center justify-center py-20">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-white opacity-10 rounded-full"></div>
@@ -76,18 +77,27 @@ export default function LoginPage() {
         <Card className="backdrop-blur-sm bg-white/95 shadow-2xl">
           <CardHeader className="space-y-4">
             <div className="flex justify-center">
-              <div className="w-12 h-12 bg-[#3B82F6] rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">B</span>
+              <div className="w-12 h-12  bg-gradient-to-br from-[#3B82F6] to-[#1E40AF] rounded-xl flex items-center justify-center">
+                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                  <img
+                    src="/bem.png"
+                    alt="Logo BEM"
+                    className="w-8 h-8 object-contain"
+                  />
+                </div>
               </div>
             </div>
             <div className="text-center space-y-2">
-              <CardTitle className="text-2xl font-bold">
-                {isLogin ? 'Welcome Back' : 'Join BEM 2024'}
+              <CardTitle className="text-2xl font-bold font-Viga text-[#1E40AF]">
+                {isLogin ? 'Selamat Datang' : 'Join BEM 2024'}
               </CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg font-bold font-Viga text-[#3B82F6]">
+                {isLogin ? 'Portal BEM IT Del' : 'Join BEM 2024'}
+              </CardTitle>
+              <CardDescription className='m-10'>
                 {isLogin 
-                  ? 'Sign in to access your student account'
-                  : 'Create your account to get started'
+                  ? 'Masuk ke Sistem Informasi Badan Eksekutif Mahasiswa Institut Teknologi Del'
+                  : 'Daftar Akun Sistem Informasi Badan Eksekutif Mahasiswa Institut Teknologi Del'
                 }
               </CardDescription>
             </div>
@@ -121,38 +131,43 @@ export default function LoginPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Username</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <div className="flex items-center space-x-2 mb-1">
+                  <User className="h-4 w-4 text-black-400 " strokeWidth={3} />
+                  <Label htmlFor="email" className="text-[#1E40AF]">Username</Label>
+                </div>
+                <div className="relative">                  
                   <Input 
                     id="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     type="text" 
-                    placeholder="Username"
-                    className="pl-10"
+                    placeholder="Masukkan username Anda"
+                    className="pl-5 bg-transparent"
                   />
+                  <User className="absolute right-5 top-3 h-4 w-4 text-black-400" strokeWidth={3} />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <div className="flex items-center space-x-2 mb-1">
+                <Lock className="h-4 w-4 text-black-400 " strokeWidth={3} />
+                <Label htmlFor="password" className="text-[#1E40AF]">Password</Label>
+                </div>
+                <div className="relative">                  
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="pl-10 pr-10"
-                  />
+                    placeholder="Masukkan Password Anda"
+                    className="pl-5 pr-10 bg-transparent"
+                  />                  
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-black-400"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? <EyeOff className="h-4 text-black" strokeWidth={3} /> : <Eye className="h-4 text-black" strokeWidth={3} />}
                   </button>
                 </div>
               </div>
@@ -176,7 +191,7 @@ export default function LoginPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="remember" />
-                    <Label htmlFor="remember" className="text-sm font-normal">
+                    <Label htmlFor="remember" className="text-sm font-normal text-gray-400">
                       Remember me
                     </Label>
                   </div>
@@ -184,7 +199,7 @@ export default function LoginPage() {
                     type="button"
                     className="text-sm text-[#3B82F6] hover:text-[#2563EB] font-medium"
                   >
-                    Forgot password?
+                    Lupa Password?
                   </button>
                 </div>
               )}
@@ -205,68 +220,26 @@ export default function LoginPage() {
                 </div>
               )}
 
-              <Button className="w-full bg-[#3B82F6] hover:bg-[#2563EB]">
-                <User className="w-4 h-4 mr-2"/>
-                {isLogin ? 'Sign In' : 'Create Account'}
+              <Button className="w-full bg-[linear-gradient(to_right,#FFFFFF_0%,rgba(167,167,167,0.84)_30%,#3B82F9_70%,#60A5FA_100%)] hover:bg-[#2563EB]">                
+                {isLogin ? 'Masuk ke Portal' : 'Create Account'}
+                <LogOut className="w-4 h-4 ml-2 text-black" strokeWidth={3}/>
               </Button>
             </form>
 
-            <div className="relative">
-              <Separator />
-              <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-2 text-sm text-gray-500">
-                or
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              <Button variant="outline" className="w-full">
-                <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                  <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                  <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                  <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                  <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                Continue with Google
-              </Button>
-              
-              <Button variant="outline" className="w-full">
-                <GraduationCap className="w-4 h-4 mr-2" />
-                Continue with University SSO
-              </Button>
-            </div>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-                <button
-                  type="button"
-                  onClick={() => setIsLogin(!isLogin)}
-                  className="text-[#3B82F6] hover:text-[#2563EB] font-medium"
-                >
-                  {isLogin ? 'Sign up' : 'Sign in'}
-                </button>
-              </p>
+            <div className="flex flex-col items-center space-y-1 mt-6 text-[#94A3B8]">
+              <Label className="text-center text-xs ">
+                © 2024 BEM Institut Teknologi Del
+              </Label>
+              <Label className="text-center text-xs">
+                Jl. Sisingamangaraja, Sitoluama, Laguboti, Toba Samosir
+              </Label>
+              <Label className="text-center text-xs">
+                Sumatera Utara 22381, Indonesia
+              </Label>
             </div>
           </CardContent>
         </Card>
 
-        {/* Help Section */}
-        <Card className="mt-6 backdrop-blur-sm bg-white/90">
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-sm mb-2 flex items-center">
-              <Phone className="w-4 h-4 mr-2 text-[#3B82F6]" />
-              Need Help?
-            </h3>
-            <p className="text-xs text-gray-600 mb-2">
-              Contact IT Support for login issues or account problems.
-            </p>
-            <div className="space-y-1 text-xs text-gray-500">
-              <p>Email: support@bem.university.edu</p>
-              <p>Phone: +62 123 456 789</p>
-              <p>Office Hours: Mon-Fri 8AM-5PM</p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );
