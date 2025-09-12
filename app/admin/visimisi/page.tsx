@@ -12,11 +12,11 @@ export default function VisiMisiPage() {
   const [data, setData] = useState(staticData.visiMisi);
 
   const handleAdd = () => {
-    router.push("/admin/visimisi/create"); // ✅ arahkan ke halaman create
+    router.push("/admin/visimisi/create"); 
   };
 
   const handleEdit = (item: any) => {
-    router.push(`/admin/visimisi/edit/${item.id}`); // opsional: halaman edit
+    router.push(`/admin/visimisi/edit/${item.id}`);
   };
 
   const handleDelete = (id: number) => {
