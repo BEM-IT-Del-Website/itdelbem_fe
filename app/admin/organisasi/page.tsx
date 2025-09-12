@@ -9,7 +9,7 @@ export default function BeritaPage() {
 
   const handleEdit = (item: any) => {
     console.log("Edit organisasi:", item);
-    // TODO: nanti bisa buka modal form edit
+    
   };
 
   const handleDelete = (index: number) => {

@@ -35,54 +35,6 @@ const DashboardPage = () => {
 
   return (
     <div className="flex-1 overflow-hidden">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="p-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              {menuItems.find((item) => item.key === activeModule)?.label ||
-                "Dashboard"}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {activeModule === "dashboard"
-                ? "Selamat datang di panel administrasi universitas"
-                : `Kelola data ${
-                    menuItems.find((item) => item.key === activeModule)?.label.toLowerCase() ||
-                    activeModule
-                  }`}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Search */}
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Cari data..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg w-64 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              />
-            </div>
-
-            {/* Tombol Tambah */}
-            {activeModule !== "dashboard" && (
-              <button
-                onClick={() => handleAdd(activeModule)}
-                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:from-blue-700 hover:to-blue-800 transition-all duration-200 shadow-lg shadow-blue-200"
-              >
-                <Plus size={16} />
-                Tambah Data
-              </button>
-            )}
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="p-6 overflow-y-auto">
         {activeModule === "dashboard" ? (

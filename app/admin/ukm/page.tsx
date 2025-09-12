@@ -9,7 +9,7 @@ export default function UkmPage() {
 
   const handleEdit = (item: any) => {
     console.log("Edit UKM:", item);
-    // TODO: nanti bisa buka modal form edit
+    
   };
 
   const handleDelete = (index: number) => {

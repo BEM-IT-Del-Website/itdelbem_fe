@@ -8,6 +8,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Artikel', href: '/user/articles' },
   { label: 'Pengumuman', href: '/user/announcements' },
   { label: 'Kontak', href: '/user/contact' },
-  { label: 'Dashboard', href: '/admin/dashboard' }
+  { label: 'Dashboard', href: '/admin/dashboard' },
+  
   
 ];

@@ -1,43 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // ✅ gunakan useRouter
 import { Plus } from "lucide-react";
 import { staticData } from "@/constants/data";
-import { fieldConfigs } from "@/constants/field"; // ✅ tambahin import
-
-// ✅ perbaikan import sesuai struktur folder
+import { fieldConfigs } from "@/constants/field";
 import DataTable from "@/components/layout/DataTable";
-import ModalForm from "@/components/layout/ModalForm";
 
 export default function VisiMisiPage() {
+  const router = useRouter(); // ✅ buat router
   const [data, setData] = useState(staticData.visiMisi);
-  const [showModal, setShowModal] = useState(false);
-  const [mode, setMode] = useState<"add" | "edit">("add");
-  const [current, setCurrent] = useState<any>({});
 
   const handleAdd = () => {
-    setMode("add");
-    setCurrent({});
-    setShowModal(true);
+    router.push("/admin/visimisi/create"); // ✅ arahkan ke halaman create
   };
 
   const handleEdit = (item: any) => {
-    setMode("edit");
-    setCurrent(item);
-    setShowModal(true);
+    router.push(`/admin/visimisi/edit/${item.id}`); // opsional: halaman edit
   };
 
   const handleDelete = (id: number) => {
     setData(data.filter((d) => d.id !== id));
-  };
-
-  const handleSave = () => {
-    if (mode === "add") {
-      setData([...data, { ...current, id: Date.now() }]);
-    } else {
-      setData(data.map((d) => (d.id === current.id ? current : d)));
-    }
-    setShowModal(false);
   };
 
   return (
@@ -57,20 +40,9 @@ export default function VisiMisiPage() {
       {/* Tabel */}
       <DataTable
         data={data}
-        fields={fieldConfigs.visiMisi} // ✅ ambil dari constants/field.ts
+        fields={fieldConfigs.visiMisi}
         onEdit={handleEdit}
         onDelete={handleDelete}
-      />
-
-      {/* Modal */}
-      <ModalForm
-        show={showModal}
-        mode={mode}
-        item={current}
-        fields={fieldConfigs.visiMisi} // ✅ ambil dari constants/field.ts
-        onClose={() => setShowModal(false)}
-        onSave={handleSave}
-        onChange={(k, v) => setCurrent({ ...current, [k]: v })}
       />
     </div>
   );
