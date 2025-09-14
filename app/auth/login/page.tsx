@@ -10,7 +10,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Eye, EyeOff, User, Lock, Mail, Phone, Calendar, GraduationCap, LogOut } from 'lucide-react';
 import { Title } from '@radix-ui/react-toast';
-import Cookies from "js-cookie";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -44,11 +43,9 @@ export default function LoginPage() {
       if (!res.ok) throw new Error('Login failed');
       const data = await res.json();
 
-      Cookies.set("token", data.token, {
-        expires: 1 / 48,        
-        path: "/",         
-        sameSite: "lax",
-      });
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("refresh_token", data.refresh_token);
+      sessionStorage.setItem("user", JSON.stringify(data.user));
 
       if (data.user.position === 'admin') {
         router.push('/admin/dashboard');

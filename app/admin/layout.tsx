@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Sidebar from "./Sidebar";
+import { useRouter } from "next/navigation";
 import {
   Search,
   User,
@@ -30,7 +31,53 @@ export default function AdminLayout({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    const userStr = sessionStorage.getItem("user"); // simpan user pas login
+    const user = userStr ? JSON.parse(userStr) : null;
+
+    if (!token || !user) {
+      router.push("/auth/login");
+      return;
+    }
+
+    if (user.position !== "admin") {
+      if (user.position === "student") {
+        router.push("/student/home");
+      } else if (user.position === "lecturer") {
+        router.push("/lecturer/home");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [router]);
+
+  // Auto detect active module from URL
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const currentModule =
+      menuItems.find((item) => currentPath.startsWith(item.path))?.key ||
+      "dashboard";
+    setActiveModule(currentModule);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowUserDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  
   // Auto detect active module from URL
   useEffect(() => {
     const currentPath = window.location.pathname;
