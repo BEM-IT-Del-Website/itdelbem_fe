@@ -38,7 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({
           </svg>
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Tidak ada data</h3>
-        <p className="text-gray-500">Belum ada data mahasiswa yang tersedia untuk ditampilkan.</p>
+        <p className="text-gray-500">Belum ada data yang tersedia untuk ditampilkan.</p>
       </div>
     );
   }

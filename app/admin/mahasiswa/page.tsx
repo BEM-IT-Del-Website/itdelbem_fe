@@ -94,6 +94,19 @@ const TableContainer: React.FC = () => {
     fetchData(page);
   }, [page]);
 
+  // Handle manual search
+  const handleSearch = () => {
+    setPage(1); // Reset to first page when searching
+    fetchData(1);
+  };
+
+  // Handle Enter key press for search
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   // Handle search with debounce
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -175,9 +188,43 @@ const TableContainer: React.FC = () => {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Data Mahasiswa Aktif</h1>
             </div>
           </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={handleSearch}
+              className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              Cari
+            </button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Search by NIM
+          <div className="relative">
+            <label htmlFor="searchName" className="block text-sm font-medium text-gray-700 mb-2">
+              NIM
+            </label>
+            <div className="relative">
+              <input
+                id="searchName"
+                type="text"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="NIM"
+                className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            </div>
+          </div> */}
+
           {/* Search by Name */}
           <div className="relative">
             <label htmlFor="searchName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -189,6 +236,7 @@ const TableContainer: React.FC = () => {
                 type="text"
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
+                onKeyPress={handleKeyPress}
                 placeholder="Nama"
                 className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
               />
@@ -211,6 +259,7 @@ const TableContainer: React.FC = () => {
                 type="text"
                 value={searchProdi}
                 onChange={(e) => setSearchProdi(e.target.value)}
+                onKeyPress={handleKeyPress}
                 placeholder="Program Studi"
                 className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
               />
@@ -233,6 +282,7 @@ const TableContainer: React.FC = () => {
                 type="number"
                 value={searchAngkatan}
                 onChange={(e) => setSearchAngkatan(e.target.value)}
+                onKeyPress={handleKeyPress}
                 placeholder="Angkatan"
                 min="2019"
                 max="2025"

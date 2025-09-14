@@ -127,16 +127,12 @@ export default function AdminLayout({
                         "text-white animate-pulse p-2 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg",
                     })}
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-gray-900 bg-clip-text text-transparent">
-                    {currentModuleData?.label || "Dashboard"}
+                    Dashboard
                   </h1>
                 </div>
                 <p className="text-gray-600 flex items-center gap-2 animate-slideInLeft">
                   <Activity size={14} className="text-blue-500 animate-bounce" />
-                  {activeModule === "dashboard"
-                    ? "Selamat datang di panel administrasi universitas"
-                    : `Kelola data ${
-                        currentModuleData?.label.toLowerCase() || activeModule
-                      }`}
+                    Selamat datang di Dashboard Administrasi BEM
                 </p>
               </div>
             </div>

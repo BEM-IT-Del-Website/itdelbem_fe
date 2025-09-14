@@ -33,11 +33,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         {sidebarOpen && (
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Sparkles className="w-7 h-7 text-blue-600 animate-spin-slow" />
-              <div className="absolute inset-0 bg-blue-400 rounded-full blur-md opacity-30 animate-pulse"></div>
+              <Link href="/admin/dashboard" className="flex-shrink-0 flex items-center group">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center mr-3 transition-transform duration-300 group-hover:scale-105">
+                  <img src="/bem.png" alt="" />
+                </div>
+              </Link>
             </div>
             <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Admin
+              BEM IT DEL
             </h2>
           </div>
         )}
