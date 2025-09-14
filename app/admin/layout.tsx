@@ -39,7 +39,7 @@ export default function AdminLayout({
     const user = userStr ? JSON.parse(userStr) : null;
 
     if (!token || !user) {
-      router.push("/auth/login");
+      router.push("/admin/dashboard");
       return;
     }
 
