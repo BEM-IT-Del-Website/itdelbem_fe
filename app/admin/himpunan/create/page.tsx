@@ -1,23 +1,45 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import axios, { AxiosError } from "axios";
 import { Users, Type, Target, Upload, Save, ArrowLeft, Building2, Image, CheckCircle2, Info, Star, Zap } from "lucide-react";
 
+interface FormData {
+  nama: string;
+  namaSingkat: string;
+  visi: string;
+  misi: string;
+  gambar: File | null;
+}
+
 export default function MahasiswaCreatePage() {
-  const [formData, setFormData] = useState({
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormData>({
     nama: "",
     namaSingkat: "",
-    visiMisi: "",
-    gambar: null as File | null,
+    visi: "",
+    misi: "",
+    gambar: null,
   });
-
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (key: string, value: string | File | null) => {
+  const handleChange = (key: keyof FormData, value: string | File | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-    
+    setError(null); // Clear error on input change
+
     // Handle image preview
     if (key === "gambar" && value instanceof File) {
+      // Validate file size (max 5MB)
+      if (value.size > 5 * 1024 * 1024) {
+        setError("Ukuran logo tidak boleh melebihi 5MB.");
+        setFormData((prev) => ({ ...prev, gambar: null }));
+        setPreviewImage(null);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviewImage(e.target?.result as string);
@@ -28,16 +50,52 @@ export default function MahasiswaCreatePage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Data mahasiswa:", formData);
-    alert("Data himpunan berhasil ditambahkan!");
-    // router.push("/admin/mahasiswa");
+    setError(null);
+
+    // Validate form
+    if (!formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi) {
+      setError("Semua kolom wajib diisi.");
+      return;
+    }
+
+    if (formData.visi.length < 100 || formData.misi.length < 100) {
+      setError("Visi dan misi harus minimal 100 karakter.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("nama", formData.nama);
+      formDataToSend.append("namaSingkat", formData.namaSingkat);
+      formDataToSend.append("visi", formData.visi);
+      formDataToSend.append("misi", formData.misi);
+      if (formData.gambar) {
+        formDataToSend.append("gambar", formData.gambar);
+      }
+
+      // Send to API
+      const response = await axios.post("http://localhost:8080/api/admin/associations", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        alert("Data himpunan berhasil ditambahkan!");
+        router.push("/admin/himpunan");
+      }
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      setError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleBack = () => {
-    // router.push("/admin/mahasiswa");
-    console.log("Navigate back");
+    router.push("/admin/himpunan");
   };
 
   return (
@@ -48,11 +106,12 @@ export default function MahasiswaCreatePage() {
           <button
             onClick={handleBack}
             className="flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6 transition-colors group"
+            disabled={isSubmitting}
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Kembali ke Data Himpunan</span>
           </button>
-          
+
           <div className="flex items-center gap-4 mb-2">
             <div className="relative">
               <div className="p-4 bg-blue-600 rounded-2xl shadow-lg">
@@ -69,6 +128,12 @@ export default function MahasiswaCreatePage() {
           </div>
         </div>
 
+        {error && (
+          <div className="mb-6 p-4 bg-red-100 border-2 border-red-300 rounded-xl text-red-700">
+            {error}
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Main Form */}
           <div className="lg:col-span-2">
@@ -79,7 +144,7 @@ export default function MahasiswaCreatePage() {
                   Informasi Himpunan
                 </h2>
               </div>
-              
+
               <div className="p-8 space-y-8">
                 {/* Nama */}
                 <div className="space-y-2">
@@ -94,6 +159,7 @@ export default function MahasiswaCreatePage() {
                     onChange={(e) => handleChange("nama", e.target.value)}
                     placeholder="🏛️ Contoh: Himpunan Mahasiswa Teknik Informatika"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
 
@@ -110,35 +176,65 @@ export default function MahasiswaCreatePage() {
                     onChange={(e) => handleChange("namaSingkat", e.target.value)}
                     placeholder="🎯 Contoh: HMTI"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
 
-                {/* Visi Misi */}
+                {/* Visi */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Target size={18} className="text-blue-600" />
-                    Visi & Misi
+                    Visi
                   </label>
                   <textarea
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
                     rows={6}
-                    value={formData.visiMisi}
-                    onChange={(e) => handleChange("visiMisi", e.target.value)}
-                    placeholder="✨ Tulis visi dan misi himpunan mahasiswa yang inspiratif dan motivatif..."
+                    value={formData.visi}
+                    onChange={(e) => handleChange("visi", e.target.value)}
+                    placeholder="✨ Tulis visi himpunan mahasiswa yang inspiratif..."
                     required
+                    disabled={isSubmitting}
                   />
-                  
-                  {/* Character Counter */}
                   <div className="flex justify-between items-center">
                     <div className="text-sm text-blue-600">
-                      {formData.visiMisi.length > 0 && (
-                        <span className="font-medium">{formData.visiMisi.length} karakter</span>
+                      {formData.visi.length > 0 && (
+                        <span className="font-medium">{formData.visi.length} karakter</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      {formData.visiMisi.length > 100 && <CheckCircle2 size={16} className="text-green-500" />}
-                      <span className={formData.visiMisi.length > 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.visiMisi.length > 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                      {formData.visi.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
+                      <span className={formData.visi.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
+                        {formData.visi.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Misi */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
+                    <Target size={18} className="text-blue-600" />
+                    Misi
+                  </label>
+                  <textarea
+                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
+                    rows={6}
+                    value={formData.misi}
+                    onChange={(e) => handleChange("misi", e.target.value)}
+                    placeholder="✨ Tulis misi himpunan mahasiswa yang motivatif..."
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-blue-600">
+                      {formData.misi.length > 0 && (
+                        <span className="font-medium">{formData.misi.length} karakter</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      {formData.misi.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
+                      <span className={formData.misi.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
+                        {formData.misi.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
                       </span>
                     </div>
                   </div>
@@ -153,11 +249,10 @@ export default function MahasiswaCreatePage() {
                   <div className="relative">
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/png,image/jpeg,image/gif"
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      onChange={(e) =>
-                        handleChange("gambar", e.target.files ? e.target.files[0] : null)
-                      }
+                      onChange={(e) => handleChange("gambar", e.target.files ? e.target.files[0] : null)}
+                      disabled={isSubmitting}
                     />
                     <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-white">
                       {previewImage ? (
@@ -167,9 +262,7 @@ export default function MahasiswaCreatePage() {
                             alt="Preview"
                             className="w-28 h-28 object-cover rounded-xl mx-auto border-2 border-blue-200 shadow-md"
                           />
-                          <p className="text-blue-600 font-medium">
-                            📁 {formData.gambar?.name}
-                          </p>
+                          <p className="text-blue-600 font-medium">📁 {formData.gambar?.name}</p>
                         </div>
                       ) : (
                         <div>
@@ -189,11 +282,11 @@ export default function MahasiswaCreatePage() {
                 <div className="pt-6 border-t-2 border-blue-100">
                   <button
                     onClick={handleSubmit}
-                    disabled={!formData.nama || !formData.namaSingkat || !formData.visiMisi}
+                    disabled={isSubmitting || !formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi}
                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
                     <Save size={20} />
-                    💾 Simpan Data Himpunan
+                    {isSubmitting ? "Menyimpan..." : "💾 Simpan Data Himpunan"}
                   </button>
                 </div>
               </div>
@@ -203,7 +296,7 @@ export default function MahasiswaCreatePage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Preview Card */}
-            {(formData.nama || formData.namaSingkat) && (
+            {(formData.nama || formData.namaSingkat || formData.visi || formData.misi) && (
               <div className="bg-white rounded-2xl shadow-lg border-2 border-blue-100 overflow-hidden">
                 <div className="bg-blue-600 p-4">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -229,12 +322,19 @@ export default function MahasiswaCreatePage() {
                       )}
                     </div>
                   )}
-                  {formData.visiMisi && (
+                  {formData.visi && (
                     <div className="bg-blue-50 rounded-lg p-4">
                       <p className="text-blue-700 text-sm leading-relaxed">
-                        {formData.visiMisi.length > 150 
-                          ? formData.visiMisi.substring(0, 150) + "..."
-                          : formData.visiMisi}
+                        <strong>Visi:</strong>{" "}
+                        {formData.visi.length > 150 ? formData.visi.substring(0, 150) + "..." : formData.visi}
+                      </p>
+                    </div>
+                  )}
+                  {formData.misi && (
+                    <div className="bg-blue-50 rounded-lg p-4">
+                      <p className="text-blue-700 text-sm leading-relaxed">
+                        <strong>Misi:</strong>{" "}
+                        {formData.misi.length > 150 ? formData.misi.substring(0, 150) + "..." : formData.misi}
                       </p>
                     </div>
                   )}
@@ -258,36 +358,49 @@ export default function MahasiswaCreatePage() {
                   <CheckCircle2 size={16} className={formData.namaSingkat ? "text-green-500" : "text-blue-300"} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-700">Visi & Misi</span>
-                  <CheckCircle2 size={16} className={formData.visiMisi ? "text-green-500" : "text-blue-300"} />
+                  <span className="text-sm text-blue-700">Visi</span>
+                  <CheckCircle2 size={16} className={formData.visi ? "text-green-500" : "text-blue-300"} />
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-blue-700">Misi</span>
+                  <CheckCircle2 size={16} className={formData.misi ? "text-green-500" : "text-blue-300"} />
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-700">Logo</span>
                   <CheckCircle2 size={16} className={formData.gambar ? "text-green-500" : "text-blue-300"} />
                 </div>
               </div>
-              
+
               {/* Progress Bar */}
               <div className="mt-4">
                 <div className="flex justify-between text-xs text-blue-600 mb-1">
                   <span>Kelengkapan</span>
-                  <span>{Math.round((
-                    (formData.nama ? 1 : 0) +
-                    (formData.namaSingkat ? 1 : 0) +
-                    (formData.visiMisi ? 1 : 0) +
-                    (formData.gambar ? 1 : 0)
-                  ) / 4 * 100)}%</span>
+                  <span>
+                    {Math.round(
+                      ((formData.nama ? 1 : 0) +
+                        (formData.namaSingkat ? 1 : 0) +
+                        (formData.visi ? 1 : 0) +
+                        (formData.misi ? 1 : 0) +
+                        (formData.gambar ? 1 : 0)) /
+                        5 *
+                        100
+                    )}
+                    %
+                  </span>
                 </div>
                 <div className="w-full bg-blue-200 rounded-full h-2">
-                  <div 
+                  <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style={{
-                      width: `${((
-                        (formData.nama ? 1 : 0) +
-                        (formData.namaSingkat ? 1 : 0) +
-                        (formData.visiMisi ? 1 : 0) +
-                        (formData.gambar ? 1 : 0)
-                      ) / 4) * 100}%`
+                      width: `${
+                        ((formData.nama ? 1 : 0) +
+                          (formData.namaSingkat ? 1 : 0) +
+                          (formData.visi ? 1 : 0) +
+                          (formData.misi ? 1 : 0) +
+                          (formData.gambar ? 1 : 0)) /
+                        5 *
+                        100
+                      }%`,
                     }}
                   ></div>
                 </div>
