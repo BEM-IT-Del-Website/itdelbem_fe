@@ -218,13 +218,13 @@ export default function OrganizationPage() {
                     <motion.div
                       whileHover={{ scale: 1.1 }}
                       transition={{ type: "spring", stiffness: 300 }}
-                      className="p-4 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-600 mb-4 shadow-lg shadow-blue-300/50 flex items-center justify-center"
+                      className="mb-4 flex items-center justify-center"
                     >
                     <img 
-                        src={`http://localhost:8080/${item.image}`} 
-                        alt={`Logo ${item.image}`}
-                        className="w-10 h-10 object-contain"
-                      />
+                      src={`http://localhost:8080/images/${item.image}`} 
+                      alt={`Logo ${item.image}`}
+                      className="w-20 h-20 object-cover shadow-lg shadow-blue-300/50"
+                    />
                     </motion.div>
                     <CardTitle className="text-xl font-bold">{item.name}</CardTitle>
                     <CardDescription className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
