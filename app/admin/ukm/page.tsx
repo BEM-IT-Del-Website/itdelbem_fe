@@ -1,18 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import DataTable from "@/components/layout/DataTable";
+import { useRouter } from "next/navigation"; // ✅ ditambahkan
 
-interface UKM {
+interface Ukm {
   id: number;
-  nama_ukm: string;
-  kategori: string;
-  pembina: string;
-  ketua: string;
-  anggota_aktif: number;
-  tahun_berdiri: number;
-  status: 'Aktif' | 'Tidak Aktif' | 'Hiatus';
-  deskripsi: string;
+  name: string;
+  shortname: string;
 }
 
 interface ApiResponse {
@@ -28,183 +22,66 @@ interface ApiResponse {
       last: string;
     };
   };
-  data: UKM[];
+  data: Ukm[];
 }
 
-const UKMContainer: React.FC = () => {
-  const router = useRouter();
-  const [data, setData] = useState<UKM[]>([]);
+const UkmPage: React.FC = () => {
+  const [data, setData] = useState<Ukm[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const router = useRouter(); // ✅ inisialisasi router
 
   const fields = [
-    { key: "nama_ukm", label: "Nama UKM", type: "string" },
-    { key: "kategori", label: "Kategori", type: "string" },
-    { key: "pembina", label: "Pembina", type: "string" },
-    { key: "ketua", label: "Ketua", type: "string" },
-    { key: "anggota_aktif", label: "Anggota Aktif", type: "number" },
-    { key: "tahun_berdiri", label: "Tahun Berdiri", type: "number" },
-    { key: "status", label: "Status", type: "string" },
+    { key: "name", label: "Nama Ukm", type: "string" },
+    { key: "shortname", label: "Nama Singkat", type: "string" },
   ];
 
   // Filter states
-  const [searchNama, setSearchNama] = useState("");
-  const [searchKategori, setSearchKategori] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchProdi, setSearchProdi] = useState("");
   const [searchStatus, setSearchStatus] = useState("");
-
-  // Sample data untuk UKM
-  const sampleUKMData: UKM[] = [
-    {
-      id: 1,
-      nama_ukm: "UKM Basket",
-      kategori: "Olahraga",
-      pembina: "Dr. John Situmorang",
-      ketua: "Michael Panjaitan",
-      anggota_aktif: 25,
-      tahun_berdiri: 2010,
-      status: "Aktif",
-      deskripsi: "Unit Kegiatan Mahasiswa yang bergerak di bidang olahraga basket"
-    },
-    {
-      id: 2,
-      nama_ukm: "UKM Musik Batak",
-      kategori: "Seni & Budaya",
-      pembina: "Prof. Maria Simbolon",
-      ketua: "Sarah Siahaan",
-      anggota_aktif: 18,
-      tahun_berdiri: 2008,
-      status: "Aktif",
-      deskripsi: "UKM yang melestarikan dan mengembangkan musik tradisional Batak"
-    },
-    {
-      id: 3,
-      nama_ukm: "UKM Paduan Suara",
-      kategori: "Seni & Budaya",
-      pembina: "Dra. Ruth Tampubolon",
-      ketua: "David Simanjuntak",
-      anggota_aktif: 30,
-      tahun_berdiri: 2005,
-      status: "Aktif",
-      deskripsi: "Paduan suara mahasiswa Institut Teknologi Del"
-    },
-    {
-      id: 4,
-      nama_ukm: "UKM Futsal",
-      kategori: "Olahraga",
-      pembina: "Ir. Parlin Hutasoit",
-      ketua: "Joni Simatupang",
-      anggota_aktif: 22,
-      tahun_berdiri: 2012,
-      status: "Aktif",
-      deskripsi: "Unit kegiatan mahasiswa untuk olahraga futsal"
-    },
-    {
-      id: 5,
-      nama_ukm: "UKM Fotografi",
-      kategori: "Teknologi & Media",
-      pembina: "M.Kom. Agus Lumban Gaol",
-      ketua: "Rina Hutabarat",
-      anggota_aktif: 15,
-      tahun_berdiri: 2015,
-      status: "Aktif",
-      deskripsi: "UKM yang mengembangkan minat dan bakat di bidang fotografi"
-    },
-    {
-      id: 6,
-      nama_ukm: "UKM Tari Tradisional",
-      kategori: "Seni & Budaya",
-      pembina: "Dra. Betty Simangunsong",
-      ketua: "Angel Sirait",
-      anggota_aktif: 12,
-      tahun_berdiri: 2009,
-      status: "Aktif",
-      deskripsi: "UKM yang melestarikan tari-tarian tradisional Batak"
-    },
-    {
-      id: 7,
-      nama_ukm: "UKM Badminton",
-      kategori: "Olahraga",
-      pembina: "Dr. Eng. Togi Tampubolon",
-      ketua: "Bobby Sinaga",
-      anggota_aktif: 20,
-      tahun_berdiri: 2011,
-      status: "Aktif",
-      deskripsi: "Unit kegiatan mahasiswa untuk olahraga badminton"
-    },
-    {
-      id: 8,
-      nama_ukm: "UKM Robotika",
-      kategori: "Teknologi & Media",
-      pembina: "Dr. Ir. Samuel Manurung",
-      ketua: "Denny Hutagalung",
-      anggota_aktif: 16,
-      tahun_berdiri: 2018,
-      status: "Aktif",
-      deskripsi: "UKM yang mengembangkan teknologi robotika dan AI"
-    },
-    {
-      id: 9,
-      nama_ukm: "UKM Literasi",
-      kategori: "Akademik",
-      pembina: "Prof. Dr. Ingrid Nainggolan",
-      ketua: "Grace Sitorus",
-      anggota_aktif: 14,
-      tahun_berdiri: 2016,
-      status: "Aktif",
-      deskripsi: "UKM yang mengembangkan budaya membaca dan menulis"
-    },
-    {
-      id: 10,
-      nama_ukm: "UKM Drama",
-      kategori: "Seni & Budaya",
-      pembina: "M.A. Robi Simamora",
-      ketua: "Kevin Saragih",
-      anggota_aktif: 8,
-      tahun_berdiri: 2013,
-      status: "Hiatus",
-      deskripsi: "UKM yang bergerak di bidang seni peran dan teater"
-    }
-  ];
 
   const fetchData = async (pageNumber: number) => {
     setLoading(true);
-    
-    try {
-      // Simulasi API call dengan sample data
-      let filteredData = sampleUKMData;
+    const token = sessionStorage.getItem("token");
 
-      // Apply filters
-      if (searchNama.trim()) {
-        filteredData = filteredData.filter(ukm => 
-          ukm.nama_ukm.toLowerCase().includes(searchNama.toLowerCase())
-        );
+    try {
+      const params = new URLSearchParams();
+      params.append("page", pageNumber.toString());
+      params.append("per_page", "10");
+
+      if (searchName.trim()) {
+        params.append("name", searchName.trim());
       }
-      if (searchKategori.trim()) {
-        filteredData = filteredData.filter(ukm => 
-          ukm.kategori.toLowerCase().includes(searchKategori.toLowerCase())
-        );
+      if (searchProdi.trim()) {
+        params.append("study_program", searchProdi.trim());
       }
       if (searchStatus.trim()) {
-        filteredData = filteredData.filter(ukm => 
-          ukm.status.toLowerCase().includes(searchStatus.toLowerCase())
-        );
+        params.append("status", searchStatus.trim());
       }
 
-      // Pagination
-      const perPage = 10;
-      const startIndex = (pageNumber - 1) * perPage;
-      const endIndex = startIndex + perPage;
-      const paginatedData = filteredData.slice(startIndex, endIndex);
+      let res = await fetch(
+        `http://localhost:9090/api/admin/clubs?${params.toString()}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      setData(paginatedData);
-      setTotalItems(filteredData.length);
-      setTotalPages(Math.ceil(filteredData.length / perPage));
-      
-    } catch (error) {
-      console.error("Error fetching UKM data:", error);
-      setData([]);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+      let json: ApiResponse = await res.json();
+      setData(json.data);
+      setTotalPages(json.metadata.total_pages);
+      setTotalItems(json.metadata.total_items);
+      setPage(json.metadata.current_page);
+    } catch (err) {
+      console.error("Gagal fetch data:", err);
     } finally {
       setLoading(false);
     }
@@ -219,60 +96,63 @@ const UKMContainer: React.FC = () => {
     fetchData(1);
   };
 
-  // Handle Enter key press for search
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-  // Handle search with debounce
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setPage(1); // Reset to first page when searching
-      fetchData(1);
-    }, 500);
+  const hasActiveFilters =
+    searchName.trim() || searchProdi.trim() || searchStatus.trim();
 
-    return () => clearTimeout(timeoutId);
-  }, [searchNama, searchKategori, searchStatus]);
-
-  // Clear all filters
-  const clearFilters = () => {
-    setSearchNama("");
-    setSearchKategori("");
-    setSearchStatus("");
-    setPage(1);
+  // ✅ perbaikan di sini
+  const handleAdd = () => {
+    router.push("/admin/ukm/create"); 
   };
 
-  // Check if any filter is active
-  const hasActiveFilters = searchNama.trim() || searchKategori.trim() || searchStatus.trim();
+  const handleEdit = (item: Ukm) => {
+    console.log("Edit item:", item);
+  };
 
-  // Improved pagination logic
+  const handleDelete = async (item: Ukm) => {
+    const token = sessionStorage.getItem("token");
+
+    try {
+      const res = await fetch(
+        `http://localhost:9090/api/admin/ukm/${item.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      fetchData(page);
+    } catch (err) {
+      console.error("Gagal hapus data:", err);
+    }
+  };
+
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    const delta = 2; // Show 2 pages before and after current page
+    const delta = 2;
 
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      // Always show first page
       pages.push(1);
-
-      // Show ellipsis if current page is far from start
       if (page > delta + 2) pages.push("...");
-
-      // Show pages around current page
       const start = Math.max(2, page - delta);
       const end = Math.min(totalPages - 1, page + delta);
-      
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
 
-      // Show ellipsis if current page is far from end
       if (page < totalPages - delta - 1) pages.push("...");
-
-      // Always show last page
       if (totalPages > 1) pages.push(totalPages);
     }
     return pages;
@@ -281,16 +161,22 @@ const UKMContainer: React.FC = () => {
   const LoadingState = () => (
     <div className="min-h-96 flex items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100">
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full animate-spin">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br bg-gradient-to-br from-blue-500 to-purple-600 rounded-full animate-spin">
           <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
             <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
           </div>
         </div>
-        <p className="text-gray-600 font-medium">Memuat data UKM...</p>
+        <p className="text-gray-600 font-medium">Memuat data Ukm...</p>
         <div className="flex justify-center space-x-1">
           <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.1s" }}
+          ></div>
+          <div
+            className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
         </div>
       </div>
     </div>
@@ -300,103 +186,149 @@ const UKMContainer: React.FC = () => {
 
   return (
     <div className="space-y-6 p-6 bg-gradient-to-br from-gray-50 to-white min-h-screen">
+      {/* Header Section */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Data Unit Kegiatan Mahasiswa (UKM)</h1>
-            <p className="text-gray-600">Kelola informasi UKM di Institut Teknologi Del</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              Data Ukm Mahasiswa
+            </h1>
           </div>
           <div className="flex items-center space-x-3">
             <button
-              onClick={() => {
-                router.push('/admin/ukm/create');
-              }}
+              onClick={handleAdd} // ✅ sudah diperbaiki
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 4v16m8-8H4"
+                />
               </svg>
-              Tambah UKM
+              Tambah Ukm
             </button>
             <button
               onClick={handleSearch}
               className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg hover:from-blue-600 hover:to-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
               Cari
             </button>
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </div>
+        </div>
+
+        {/* Search input tetap */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="relative">
+            <label
+              htmlFor="searchName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Nama Ukm
+            </label>
+            <div className="relative">
+              <input
+                id="searchName"
+                type="text"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Nama Ukm"
+                className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
                 </svg>
-                Hapus Filter
-              </button>
-            )}
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Enhanced Search Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Nama UKM</label>
-            <input
-              type="text"
-              value={searchNama}
-              onChange={(e) => setSearchNama(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Cari nama UKM..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-            />
-          </div>
-        </div>
-
       </div>
-    
 
       {/* Table Section */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <DataTable
           data={data}
           fields={fields}
-          onEdit={(item) => console.log("Edit UKM:", item)}
+          onEdit={handleEdit}
           currentPage={page}
           perPage={10}
         />
       </div>
 
-      {/* Enhanced Pagination */}
+      {/* Pagination tetap */}
       {totalPages > 1 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-            {/* Pagination Info */}
             <div className="text-sm text-gray-600">
-              Menampilkan <span className="font-medium text-gray-900">{(page - 1) * 10 + 1}</span> - 
-              <span className="font-medium text-gray-900">{Math.min(page * 10, totalItems)}</span> dari 
-              <span className="font-medium text-gray-900"> {totalItems}</span> UKM
-              {hasActiveFilters && <span className="text-blue-600"> (terfilter)</span>}
+              Menampilkan{" "}
+              <span className="font-medium text-gray-900">
+                {(page - 1) * 10 + 1}
+              </span>{" "}
+              -{" "}
+              <span className="font-medium text-gray-900">
+                {Math.min(page * 10, totalItems)}
+              </span>{" "}
+              dari
+              <span className="font-medium text-gray-900"> {totalItems}</span>{" "}
+              data
+              {hasActiveFilters && (
+                <span className="text-blue-600"> (terfilter)</span>
+              )}
             </div>
 
-            {/* Pagination Controls */}
             <nav className="flex items-center space-x-1">
-              {/* Previous Button */}
               <button
                 disabled={page === 1}
                 onClick={() => setPage(page - 1)}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-sm"
               >
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                <svg
+                  className="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
                 Previous
               </button>
 
-              {/* Page Numbers */}
               <div className="hidden sm:flex items-center space-x-1">
                 {getPageNumbers().map((num, idx) =>
                   typeof num === "number" ? (
@@ -405,34 +337,45 @@ const UKMContainer: React.FC = () => {
                       onClick={() => setPage(num)}
                       className={`inline-flex items-center justify-center w-10 h-10 text-sm font-medium rounded-lg transition-all duration-200 ${
                         num === page
-                          ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transform scale-105"
+                          ? "bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-lg transform scale-105"
                           : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 hover:shadow-sm"
                       }`}
                     >
                       {num}
                     </button>
                   ) : (
-                    <span key={idx} className="inline-flex items-center justify-center w-10 h-10 text-gray-400">
+                    <span
+                      key={idx}
+                      className="inline-flex items-center justify-center w-10 h-10 text-gray-400"
+                    >
                       {num}
                     </span>
                   )
                 )}
               </div>
 
-              {/* Mobile page indicator */}
               <div className="sm:hidden px-4 py-2 text-sm text-gray-600 bg-gray-50 rounded-lg">
                 {page} / {totalPages}
               </div>
 
-              {/* Next Button */}
               <button
                 disabled={page === totalPages}
                 onClick={() => setPage(page + 1)}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-sm"
               >
                 Next
-                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                <svg
+                  className="w-4 h-4 ml-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </nav>
@@ -443,4 +386,4 @@ const UKMContainer: React.FC = () => {
   );
 };
 
-export default UKMContainer;
+export default UkmPage;
