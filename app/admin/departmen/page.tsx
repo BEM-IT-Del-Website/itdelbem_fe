@@ -107,7 +107,7 @@ const DepartemenPage: React.FC = () => {
 
   // ✅ perbaikan di sini
   const handleAdd = () => {
-    router.push("/admin/Departemen/create"); 
+    router.push("/admin/department/create"); 
   };
 
   const handleEdit = (item: Departemen) => {
@@ -119,7 +119,7 @@ const DepartemenPage: React.FC = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:9090/api/admin/ukm/${item.id}`,
+        `http://localhost:9090/api/admin/department/${item.id}`,
         {
           method: "DELETE",
           headers: {

@@ -68,7 +68,7 @@ export default function MahasiswaCreatePage() {
     };
 
     const response = await axios.post(
-      "http://localhost:9090/api/admin/clubs",
+      "http://localhost:9090/api/admin/department",
       payload,
       {
         headers: {
@@ -79,8 +79,8 @@ export default function MahasiswaCreatePage() {
     );
 
     if (response.status === 201 || response.status === 200) {
-      alert("Data UKM berhasil ditambahkan!");
-      router.push("/admin/ukm");
+      alert("Data Departemen berhasil ditambahkan!");
+      router.push("/admin/departmen");
     }
   } catch (err) {
     const error = err as AxiosError<{ message?: string }>;
@@ -97,7 +97,7 @@ export default function MahasiswaCreatePage() {
 };
 
   const handleBack = () => {
-    router.push("/admin/ukm"); // Perbaiki redirect ke halaman UKM
+    router.push("/admin/departmen"); // Perbaiki redirect ke halaman Departemen
   };
 
   return (
@@ -111,7 +111,7 @@ export default function MahasiswaCreatePage() {
             disabled={isSubmitting}
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Kembali ke Data UKM</span>
+            <span className="font-medium">Kembali ke Data Departemen</span>
           </button>
 
           <div className="flex items-center gap-4 mb-2">
@@ -124,8 +124,8 @@ export default function MahasiswaCreatePage() {
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-blue-900">Tambah Data UKM</h1>
-              <p className="text-blue-600">Buat data UKM mahasiswa baru</p>
+              <h1 className="text-3xl font-bold text-blue-900">Tambah Data Departemen</h1>
+              <p className="text-blue-600">Buat data Departemen mahasiswa baru</p>
             </div>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function MahasiswaCreatePage() {
               <div className="bg-blue-600 p-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-3">
                   <Users size={24} />
-                  Informasi UKM
+                  Informasi Departemen
                 </h2>
               </div>
 
@@ -152,14 +152,14 @@ export default function MahasiswaCreatePage() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Building2 size={18} className="text-blue-600" />
-                    Nama Lengkap UKM
+                    Nama Lengkap Departemen
                   </label>
                   <input
                     type="text"
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
                     value={formData.nama}
                     onChange={(e) => handleChange("nama", e.target.value)}
-                    placeholder="🏛️ Contoh: UKM Mahasiswa Teknik Informatika"
+                    placeholder="🏛️ Contoh: Departemen Mahasiswa Teknik Informatika"
                     required
                     disabled={isSubmitting}
                   />
@@ -193,7 +193,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.visi}
                     onChange={(e) => handleChange("visi", e.target.value)}
-                    placeholder="✨ Tulis visi UKM mahasiswa yang inspiratif..."
+                    placeholder="✨ Tulis visi Departemen mahasiswa yang inspiratif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -223,7 +223,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.misi}
                     onChange={(e) => handleChange("misi", e.target.value)}
-                    placeholder="✨ Tulis misi UKM mahasiswa yang motivatif..."
+                    placeholder="✨ Tulis misi Departemen mahasiswa yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -253,7 +253,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.nilai}
                     onChange={(e) => handleChange("nilai", e.target.value)}
-                    placeholder="✨ Tulis nilai-nilai UKM mahasiswa yang motivatif..."
+                    placeholder="✨ Tulis nilai-nilai Departemen mahasiswa yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -282,7 +282,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.workplan}
                     onChange={(e) => handleChange("workplan", e.target.value)}
-                    placeholder="✨ Tulis workplan UKM mahasiswa yang motivatif..."
+                    placeholder="✨ Tulis workplan Departemen mahasiswa yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -308,7 +308,7 @@ export default function MahasiswaCreatePage() {
                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
                     <Save size={20} />
-                    {isSubmitting ? "Menyimpan..." : "💾 Simpan Data UKM"}
+                    {isSubmitting ? "Menyimpan..." : "💾 Simpan Data Departemen"}
                   </button>
                 </div>
               </div>
