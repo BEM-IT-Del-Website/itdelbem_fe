@@ -76,7 +76,6 @@ export default function MahasiswaCreatePage() {
         router.push("/login"); // Redirect to login page
         return;
       }
-
       const formDataToSend = new FormData();
       formDataToSend.append("name", formData.nama);
       formDataToSend.append("short_name", formData.namaSingkat);
