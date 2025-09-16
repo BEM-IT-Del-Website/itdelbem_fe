@@ -40,7 +40,7 @@ export default function OrganizationPage() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('http://localhost:9090/api/association', {
+      const response = await fetch('http://localhost:8080/api/association', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -221,7 +221,7 @@ export default function OrganizationPage() {
                       className="mb-4 flex items-center justify-center"
                     >
                     <img 
-                      src={`http://localhost:8080/images/${item.image}`} 
+                      src={`http://localhost:8080/associations/${item.image}`} 
                       alt={`Logo ${item.image}`}
                       className="w-20 h-20 object-cover shadow-lg shadow-blue-300/50"
                     />

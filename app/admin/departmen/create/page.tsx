@@ -12,6 +12,7 @@ interface FormData {
   misi: string;
   nilai: string;
   workplan: string;
+  gambar: File | null;
 }
 
 export default function MahasiswaCreatePage() {
@@ -23,6 +24,7 @@ export default function MahasiswaCreatePage() {
     misi: "",
     nilai: "",
     workplan:"",
+    gambar: null,
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +33,25 @@ export default function MahasiswaCreatePage() {
   const handleChange = (key: keyof FormData, value: string | File | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
     setError(null); // Clear error on input change
+
+    // Handle image preview
+    if (key === "gambar" && value instanceof File) {
+      // Validate file size (max 5MB)
+      if (value.size > 5 * 1024 * 1024) {
+        setError("Ukuran logo tidak boleh melebihi 5MB.");
+        setFormData((prev) => ({ ...prev, gambar: null }));
+        setPreviewImage(null);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(value);
+    } else if (key === "gambar" && !value) {
+      setPreviewImage(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

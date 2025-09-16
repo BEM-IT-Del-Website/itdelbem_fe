@@ -11,7 +11,7 @@ interface FormData {
   visi: string;
   misi: string;
   nilai: string;
-  workplan: string;
+  gambar: File | null;
 }
 
 export default function MahasiswaCreatePage() {
@@ -22,7 +22,7 @@ export default function MahasiswaCreatePage() {
     visi: "",
     misi: "",
     nilai: "",
-    workplan:"",
+    gambar: null,
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -31,73 +31,89 @@ export default function MahasiswaCreatePage() {
   const handleChange = (key: keyof FormData, value: string | File | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
     setError(null); // Clear error on input change
+
+    // Handle image preview
+    if (key === "gambar" && value instanceof File) {
+      // Validate file size (max 5MB)
+      if (value.size > 5 * 1024 * 1024) {
+        setError("Ukuran logo tidak boleh melebihi 5MB.");
+        setFormData((prev) => ({ ...prev, gambar: null }));
+        setPreviewImage(null);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(value);
+    } else if (key === "gambar" && !value) {
+      setPreviewImage(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(null);
+    e.preventDefault();
+    setError(null);
 
-  if (!formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi) {
-    setError("Semua kolom wajib diisi.");
-    return;
-  }
-
-  if (formData.visi.length < 100 || formData.misi.length < 100) {
-    setError("Visi dan misi harus minimal 100 karakter.");
-    return;
-  }
-
-  setIsSubmitting(true);
-
-  try {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      setError("Anda harus login untuk melakukan aksi ini.");
-      router.push("/login");
+    // Validate form
+    if (!formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi) {
+      setError("Semua kolom wajib diisi.");
       return;
     }
 
-    // 🔥 Ganti: kirim JSON biasa
-    const payload = {
-      name: formData.nama,
-      shortname: formData.namaSingkat,
-      vision: formData.visi,
-      mission: formData.misi,
-      value: formData.nilai,
-      workplan: formData.workplan,
-    };
+    if (formData.visi.length < 100 || formData.misi.length < 100) {
+      setError("Visi dan misi harus minimal 100 karakter.");
+      return;
+    }
 
-    const response = await axios.post(
-      "http://localhost:9090/api/admin/clubs",
-      payload,
-      {
+    setIsSubmitting(true);
+
+    try {
+      const token = sessionStorage.getItem("token"); // Changed from localStorage to sessionStorage
+      if (!token) {
+        setError("Anda harus login untuk melakukan aksi ini.");
+        router.push("/login"); // Redirect to login page
+        return;
+      }
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.nama);
+      formDataToSend.append("short_name", formData.namaSingkat);
+      formDataToSend.append("vision", formData.visi);
+      formDataToSend.append("mission", formData.misi);
+      formDataToSend.append("values", formData.nilai);
+      if (formData.gambar) {
+        formDataToSend.append("image", formData.gambar);
+      }
+
+      // Send to API with Authorization header
+      const response = await axios.post("http://localhost:8080/api/admin/clubs", formDataToSend, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
-      }
-    );
+      });
 
-    if (response.status === 201 || response.status === 200) {
-      alert("Data UKM berhasil ditambahkan!");
-      router.push("/admin/ukm");
+      if (response.status === 201 || response.status === 200) {
+        alert("Data UKM berhasil ditambahkan!");
+        router.push("/admin/mahasiswa");
+      }
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      if (error.response?.status === 401) {
+        setError("Sesi tidak valid atau telah berakhir. Silakan login kembali.");
+        sessionStorage.removeItem("authToken"); // Changed from localStorage to sessionStorage
+        router.push("/auth/login");
+      } else {
+        setError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-  } catch (err) {
-    const error = err as AxiosError<{ message?: string }>;
-    if (error.response?.status === 401) {
-      setError("Sesi tidak valid atau telah berakhir. Silakan login kembali.");
-      sessionStorage.removeItem("token");
-      router.push("/auth/login");
-    } else {
-      setError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.");
-    }
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
   const handleBack = () => {
-    router.push("/admin/ukm"); // Perbaiki redirect ke halaman UKM
+    router.push("/admin/mahasiswa");
   };
 
   return (
@@ -159,7 +175,7 @@ export default function MahasiswaCreatePage() {
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
                     value={formData.nama}
                     onChange={(e) => handleChange("nama", e.target.value)}
-                    placeholder="🏛️ Contoh: UKM Mahasiswa Teknik Informatika"
+                    placeholder="🏛️ Contoh: Del Robotic Clubs"
                     required
                     disabled={isSubmitting}
                   />
@@ -176,7 +192,7 @@ export default function MahasiswaCreatePage() {
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
                     value={formData.namaSingkat}
                     onChange={(e) => handleChange("namaSingkat", e.target.value)}
-                    placeholder="🎯 Contoh: HMTI"
+                    placeholder="🎯 Contoh: DRC"
                     required
                     disabled={isSubmitting}
                   />
@@ -193,7 +209,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.visi}
                     onChange={(e) => handleChange("visi", e.target.value)}
-                    placeholder="✨ Tulis visi UKM mahasiswa yang inspiratif..."
+                    placeholder="✨ Tulis visi UKM yang inspiratif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -223,7 +239,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.misi}
                     onChange={(e) => handleChange("misi", e.target.value)}
-                    placeholder="✨ Tulis misi UKM mahasiswa yang motivatif..."
+                    placeholder="✨ Tulis misi UKM yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -253,7 +269,7 @@ export default function MahasiswaCreatePage() {
                     rows={6}
                     value={formData.nilai}
                     onChange={(e) => handleChange("nilai", e.target.value)}
-                    placeholder="✨ Tulis nilai-nilai UKM mahasiswa yang motivatif..."
+                    placeholder="✨ Tulis misi UKM yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
@@ -271,35 +287,45 @@ export default function MahasiswaCreatePage() {
                     </div>
                   </div>
                 </div>
-                {/* Work plan */}
+
+                {/* File Upload */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
-                    <Target size={18} className="text-blue-600" />
-                    Workplan
+                    <Upload size={18} className="text-blue-600" />
+                    Upload Logo UKM
                   </label>
-                  <textarea
-                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
-                    rows={6}
-                    value={formData.workplan}
-                    onChange={(e) => handleChange("workplan", e.target.value)}
-                    placeholder="✨ Tulis workplan UKM mahasiswa yang motivatif..."
-                    required
-                    disabled={isSubmitting}
-                  />
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm text-blue-600">
-                      {formData.workplan.length > 0 && (
-                        <span className="font-medium">{formData.workplan.length} karakter</span>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/gif"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      onChange={(e) => handleChange("gambar", e.target.files ? e.target.files[0] : null)}
+                      disabled={isSubmitting}
+                    />
+                    <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-white">
+                      {previewImage ? (
+                        <div className="space-y-4">
+                          <img
+                            src={previewImage}
+                            alt="Preview"
+                            className="w-28 h-28 object-cover rounded-xl mx-auto border-2 border-blue-200 shadow-md"
+                          />
+                          <p className="text-blue-600 font-medium">📁 {formData.gambar?.name}</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <Image size={48} className="mx-auto text-blue-400 mb-3" />
+                          <p className="text-blue-600 font-medium">
+                            📸 Klik untuk upload logo atau drag & drop
+                            <br />
+                            <span className="text-sm text-blue-500">PNG, JPG, atau GIF maksimal 5MB</span>
+                          </p>
+                        </div>
                       )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      {formData.workplan.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
-                      <span className={formData.workplan.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.workplan.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
-                      </span>
                     </div>
                   </div>
                 </div>
+
                 {/* Submit Button */}
                 <div className="pt-6 border-t-2 border-blue-100">
                   <button
@@ -387,6 +413,10 @@ export default function MahasiswaCreatePage() {
                   <span className="text-sm text-blue-700">Misi</span>
                   <CheckCircle2 size={16} className={formData.misi ? "text-green-500" : "text-blue-300"} />
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-blue-700">Logo</span>
+                  <CheckCircle2 size={16} className={formData.gambar ? "text-green-500" : "text-blue-300"} />
+                </div>
               </div>
 
               {/* Progress Bar */}
@@ -398,7 +428,10 @@ export default function MahasiswaCreatePage() {
                       ((formData.nama ? 1 : 0) +
                         (formData.namaSingkat ? 1 : 0) +
                         (formData.visi ? 1 : 0) +
-                        (formData.misi ? 1 : 0)) / 4 * 100
+                        (formData.misi ? 1 : 0) +
+                        (formData.gambar ? 1 : 0)) /
+                        5 *
+                        100
                     )}
                     %
                   </span>
@@ -411,10 +444,12 @@ export default function MahasiswaCreatePage() {
                         ((formData.nama ? 1 : 0) +
                           (formData.namaSingkat ? 1 : 0) +
                           (formData.visi ? 1 : 0) +
-                          (formData.misi ? 1 : 0)) / 4 * 100
+                          (formData.misi ? 1 : 0) +
+                          (formData.gambar ? 1 : 0)) /
+                        5 *
+                        100
                       }%`,
                     }}
-
                   ></div>
                 </div>
               </div>
