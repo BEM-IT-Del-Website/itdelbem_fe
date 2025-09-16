@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { Users, Type, Target, Upload, Save, ArrowLeft, Building2, Image, CheckCircle2, Info, Star, Zap } from "lucide-react";
+import dynamic from "next/dynamic";
+import { 
+  Users, Type, Target, Upload, Save, ArrowLeft, 
+  Building2, Image, CheckCircle2, Info, Zap 
+} from "lucide-react";
+
+// ⬇️ Import ReactQuill secara dinamis (karena butuh browser)
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css";
 
 export default function MahasiswaCreatePage() {
   const [formData, setFormData] = useState({
@@ -15,7 +23,7 @@ export default function MahasiswaCreatePage() {
 
   const handleChange = (key: string, value: string | File | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
-    
+
     // Handle image preview
     if (key === "gambar" && value instanceof File) {
       const reader = new FileReader();
@@ -92,7 +100,7 @@ export default function MahasiswaCreatePage() {
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
                     value={formData.nama}
                     onChange={(e) => handleChange("nama", e.target.value)}
-                    placeholder="🏛️ Contoh: Himpunan Mahasiswa Teknik Informatika"
+                    placeholder=" Contoh: Himpunan Mahasiswa Teknik Informatika"
                     required
                   />
                 </div>
@@ -108,28 +116,27 @@ export default function MahasiswaCreatePage() {
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
                     value={formData.namaSingkat}
                     onChange={(e) => handleChange("namaSingkat", e.target.value)}
-                    placeholder="🎯 Contoh: HMTI"
+                    placeholder=" Contoh: HMTI"
                     required
                   />
                 </div>
 
-                {/* Visi Misi */}
+                {/* Visi Misi (pakai ReactQuill) */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Target size={18} className="text-blue-600" />
                     Visi & Misi
                   </label>
-                  <textarea
-                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
-                    rows={6}
-                    value={formData.visiMisi}
-                    onChange={(e) => handleChange("visiMisi", e.target.value)}
-                    placeholder="✨ Tulis visi dan misi himpunan mahasiswa yang inspiratif dan motivatif..."
-                    required
-                  />
                   
+                  <ReactQuill
+                    theme="snow"
+                    value={formData.visiMisi}
+                    onChange={(value) => handleChange("visiMisi", value)}
+                    className="bg-white rounded-xl border-2 border-blue-200"
+                  />
+
                   {/* Character Counter */}
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center mt-2">
                     <div className="text-sm text-blue-600">
                       {formData.visiMisi.length > 0 && (
                         <span className="font-medium">{formData.visiMisi.length} karakter</span>
@@ -138,7 +145,7 @@ export default function MahasiswaCreatePage() {
                     <div className="flex items-center gap-2 text-sm">
                       {formData.visiMisi.length > 100 && <CheckCircle2 size={16} className="text-green-500" />}
                       <span className={formData.visiMisi.length > 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.visiMisi.length > 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                        {formData.visiMisi.length > 100 ? " Panjang yang baik" : "Minimal 100 karakter"}
                       </span>
                     </div>
                   </div>
@@ -168,7 +175,7 @@ export default function MahasiswaCreatePage() {
                             className="w-28 h-28 object-cover rounded-xl mx-auto border-2 border-blue-200 shadow-md"
                           />
                           <p className="text-blue-600 font-medium">
-                            📁 {formData.gambar?.name}
+                             {formData.gambar?.name}
                           </p>
                         </div>
                       ) : (
@@ -193,7 +200,7 @@ export default function MahasiswaCreatePage() {
                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
                     <Save size={20} />
-                    💾 Simpan Data Himpunan
+                     Simpan Data Himpunan
                   </button>
                 </div>
               </div>
@@ -208,7 +215,7 @@ export default function MahasiswaCreatePage() {
                 <div className="bg-blue-600 p-4">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
                     <CheckCircle2 size={20} />
-                    👀 Preview
+                     Preview
                   </h3>
                 </div>
                 <div className="p-6 space-y-4">
@@ -232,9 +239,10 @@ export default function MahasiswaCreatePage() {
                   {formData.visiMisi && (
                     <div className="bg-blue-50 rounded-lg p-4">
                       <p className="text-blue-700 text-sm leading-relaxed">
-                        {formData.visiMisi.length > 150 
-                          ? formData.visiMisi.substring(0, 150) + "..."
-                          : formData.visiMisi}
+                        {/* Strip HTML dari ReactQuill untuk preview singkat */}
+                        {formData.visiMisi.replace(/<[^>]+>/g, "").length > 150 
+                          ? formData.visiMisi.replace(/<[^>]+>/g, "").substring(0, 150) + "..."
+                          : formData.visiMisi.replace(/<[^>]+>/g, "")}
                       </p>
                     </div>
                   )}
@@ -246,7 +254,7 @@ export default function MahasiswaCreatePage() {
             <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
               <h3 className="font-bold text-blue-900 mb-4 flex items-center gap-2">
                 <Building2 size={18} className="text-blue-600" />
-                📊 Progress Pengisian
+                Progress Pengisian
               </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -301,20 +309,20 @@ export default function MahasiswaCreatePage() {
                   <Info size={20} className="text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-blue-900 mb-2">💡 Tips Mengisi Data</h3>
+                  <h3 className="font-bold text-blue-900 mb-2">Tips Mengisi Data</h3>
                   <ul className="text-sm text-blue-700 space-y-1">
-                    <li>🎯 Gunakan nama resmi yang lengkap</li>
-                    <li>⚡ Singkatan harus mudah diingat</li>
-                    <li>✨ Visi & misi harus jelas dan inspiratif</li>
-                    <li>🖼️ Logo sebaiknya format PNG transparan</li>
-                    <li>✅ Pastikan semua data sudah benar</li>
+                    <li>Gunakan nama resmi yang lengkap</li>
+                    <li>Singkatan harus mudah diingat</li>
+                    <li>Visi & misi harus jelas dan inspiratif</li>
+                    <li>Logo sebaiknya format PNG transparan</li>
+                    <li>Pastikan semua data sudah benar</li>
                   </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </div>  
     </div>
   );
 }
