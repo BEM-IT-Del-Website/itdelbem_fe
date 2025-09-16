@@ -10,6 +10,7 @@ interface FormData {
   namaSingkat: string;
   visi: string;
   misi: string;
+  nilai: string;
   gambar: File | null;
 }
 
@@ -20,6 +21,7 @@ export default function MahasiswaCreatePage() {
     namaSingkat: "",
     visi: "",
     misi: "",
+    nilai: "",
     gambar: null,
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -68,34 +70,51 @@ export default function MahasiswaCreatePage() {
     setIsSubmitting(true);
 
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("nama", formData.nama);
-      formDataToSend.append("namaSingkat", formData.namaSingkat);
-      formDataToSend.append("visi", formData.visi);
-      formDataToSend.append("misi", formData.misi);
-      if (formData.gambar) {
-        formDataToSend.append("gambar", formData.gambar);
+      const token = sessionStorage.getItem("token"); // Changed from localStorage to sessionStorage
+      if (!token) {
+        setError("Anda harus login untuk melakukan aksi ini.");
+        router.push("/login"); // Redirect to login page
+        return;
       }
 
-      // Send to API
+      const formDataToSend = new FormData();
+      formDataToSend.append("name", formData.nama);
+      formDataToSend.append("short_name", formData.namaSingkat);
+      formDataToSend.append("vision", formData.visi);
+      formDataToSend.append("mission", formData.misi);
+      formDataToSend.append("values", formData.nilai);
+      if (formData.gambar) {
+        formDataToSend.append("image", formData.gambar);
+      }
+
+      // Send to API with Authorization header
       const response = await axios.post("http://localhost:8080/api/admin/associations", formDataToSend, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.status === 201 || response.status === 200) {
         alert("Data himpunan berhasil ditambahkan!");
-        router.push("/admin/himpunan");
+        router.push("/admin/mahasiswa");
       }
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
-      setError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.");
+      if (error.response?.status === 401) {
+        setError("Sesi tidak valid atau telah berakhir. Silakan login kembali.");
+        sessionStorage.removeItem("authToken"); // Changed from localStorage to sessionStorage
+        router.push("/auth/login");
+      } else {
+        setError(error.response?.data?.message || "Terjadi kesalahan saat menyimpan data.");
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleBack = () => {
-    router.push("/admin/himpunan");
+    router.push("/admin/mahasiswa");
   };
 
   return (
@@ -235,6 +254,36 @@ export default function MahasiswaCreatePage() {
                       {formData.misi.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
                       <span className={formData.misi.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
                         {formData.misi.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Misi */}
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
+                    <Target size={18} className="text-blue-600" />
+                    Nilai
+                  </label>
+                  <textarea
+                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
+                    rows={6}
+                    value={formData.nilai}
+                    onChange={(e) => handleChange("nilai", e.target.value)}
+                    placeholder="✨ Tulis misi himpunan mahasiswa yang motivatif..."
+                    required
+                    disabled={isSubmitting}
+                  />
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-blue-600">
+                      {formData.nilai.length > 0 && (
+                        <span className="font-medium">{formData.nilai.length} karakter</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-sm">
+                      {formData.nilai.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
+                      <span className={formData.nilai.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
+                        {formData.nilai.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
                       </span>
                     </div>
                   </div>

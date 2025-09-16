@@ -221,7 +221,7 @@ export default function OrganizationPage() {
                       className="p-4 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-600 mb-4 shadow-lg shadow-blue-300/50 flex items-center justify-center"
                     >
                     <img 
-                        src={`association.image`} 
+                        src={`http://localhost:8080/${item.image}`} 
                         alt={`Logo ${item.image}`}
                         className="w-10 h-10 object-contain"
                       />
