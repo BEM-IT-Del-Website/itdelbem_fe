@@ -35,7 +35,7 @@ const DepartemenPage: React.FC = () => {
 
   const fields = [
     { key: "name", label: "Nama Departemen", type: "string" },
-    { key: "shortname", label: "Nama Singkat", type: "string" },
+    { key: "short_name", label: "Nama Singkat", type: "string" },
   ];
 
   // Filter states
@@ -63,7 +63,7 @@ const DepartemenPage: React.FC = () => {
       }
 
       let res = await fetch(
-        `http://localhost:9090/api/admin/department?${params.toString()}`,
+        `http://localhost:8080/api/admin/department?${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -119,7 +119,7 @@ const DepartemenPage: React.FC = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:9090/api/admin/department/${item.id}`,
+        `http://localhost:8080/api/admin/department/${item.id}`,
         {
           method: "DELETE",
           headers: {
