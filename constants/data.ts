@@ -91,5 +91,5 @@ export const menuItems = [
   { key: "berita", label: "Berita", icon: Newspaper, path: "/admin/news" },
   { key: "pengumuman", label: "Pengumuman", icon: Megaphone, path: "/admin/announcement" },
   { key: "ukm", label: "UKM", icon: BookOpen, path: "/admin/ukm" },
-  { key: "departemen", label: "Departemen", icon: Briefcase, path: "/admin/departmen" },
+  { key: "departement", label: "Departemen", icon: Briefcase, path: "/admin/department" },
 ];
