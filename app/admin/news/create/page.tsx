@@ -6,22 +6,18 @@ import axios, { AxiosError } from "axios";
 import { Users, Type, Target, Upload, Save, ArrowLeft, Building2, Image, CheckCircle2, Info, Star, Zap } from "lucide-react";
 
 interface FormData {
-  nama: string;
-  namaSingkat: string;
-  visi: string;
-  misi: string;
-  nilai: string;
+  title: string;
+  content: string;
+  category: string;
   gambar: File | null;
 }
 
 export default function MahasiswaCreatePage() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
-    nama: "",
-    namaSingkat: "",
-    visi: "",
-    misi: "",
-    nilai: "",
+    title: "",
+    content: "",
+    category: "",
     gambar: null,
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -57,13 +53,13 @@ export default function MahasiswaCreatePage() {
     setError(null);
 
     // Validate form
-    if (!formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi) {
+    if (!formData.title || !formData.content || !formData.category) {
       setError("Semua kolom wajib diisi.");
       return;
     }
 
-    if (formData.visi.length < 100 || formData.misi.length < 100) {
-      setError("Visi dan misi harus minimal 100 karakter.");
+    if (formData.content.length < 100) {
+      setError("Content harus minimal 100 karakter.");
       return;
     }
 
@@ -77,17 +73,15 @@ export default function MahasiswaCreatePage() {
         return;
       }
       const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.nama);
-      formDataToSend.append("short_name", formData.namaSingkat);
-      formDataToSend.append("vision", formData.visi);
-      formDataToSend.append("mission", formData.misi);
-      formDataToSend.append("values", formData.nilai);
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("content", formData.content);
+      formDataToSend.append("category", formData.category);
       if (formData.gambar) {
-        formDataToSend.append("image", formData.gambar);
+        formDataToSend.append("image_url", formData.gambar);
       }
 
       // Send to API with Authorization header
-      const response = await axios.post("http://localhost:9090/api/admin/department", formDataToSend, {
+      const response = await axios.post("http://localhost:9090/api/admin/news", formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -95,7 +89,7 @@ export default function MahasiswaCreatePage() {
       });
 
       if (response.status === 201 || response.status === 200) {
-        alert("Data departemen berhasil ditambahkan!");
+        alert("Data News berhasil ditambahkan!");
         router.push("/admin/mahasiswa");
       }
     } catch (err) {
@@ -127,7 +121,7 @@ export default function MahasiswaCreatePage() {
             disabled={isSubmitting}
           >
             <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="font-medium">Kembali ke Data Departemen</span>
+            <span className="font-medium">Kembali ke Data News</span>
           </button>
 
           <div className="flex items-center gap-4 mb-2">
@@ -140,8 +134,8 @@ export default function MahasiswaCreatePage() {
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-blue-900">Tambah Data Departemen</h1>
-              <p className="text-blue-600">Buat data departemen mahasiswa baru</p>
+              <h1 className="text-3xl font-bold text-blue-900">Tambah Data News</h1>
+              <p className="text-blue-600">Buat data News mahasiswa baru</p>
             </div>
           </div>
         </div>
@@ -159,7 +153,7 @@ export default function MahasiswaCreatePage() {
               <div className="bg-blue-600 p-6">
                 <h2 className="text-xl font-bold text-white flex items-center gap-3">
                   <Users size={24} />
-                  Informasi Departemen
+                  Informasi News
                 </h2>
               </div>
 
@@ -168,121 +162,72 @@ export default function MahasiswaCreatePage() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Building2 size={18} className="text-blue-600" />
-                    Nama Lengkap Departemen
+                    Judul News
                   </label>
                   <input
                     type="text"
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
-                    value={formData.nama}
-                    onChange={(e) => handleChange("nama", e.target.value)}
-                    placeholder="🏛️ Contoh: Departemen Seni dan Budaya"
+                    value={formData.title}
+                    onChange={(e) => handleChange("title", e.target.value)}
+                    placeholder="🏛️ Contoh: Del Robotic Clubs"
                     required
                     disabled={isSubmitting}
                   />
                 </div>
-
-                {/* Nama Singkat */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
-                    <Type size={18} className="text-blue-600" />
-                    Nama Singkat / Akronim
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none bg-blue-50 text-blue-900 font-medium"
-                    value={formData.namaSingkat}
-                    onChange={(e) => handleChange("namaSingkat", e.target.value)}
-                    placeholder="🎯 Contoh: DEPSENBUD"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-
-                {/* Visi */}
+                {/* Content */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Target size={18} className="text-blue-600" />
-                    Visi
+                    Deskripsi
                   </label>
                   <textarea
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
                     rows={6}
-                    value={formData.visi}
-                    onChange={(e) => handleChange("visi", e.target.value)}
-                    placeholder="✨ Tulis visi departemen mahasiswa yang inspiratif..."
+                    value={formData.content}
+                    onChange={(e) => handleChange("content", e.target.value)}
+                    placeholder="✨ Tulis visi News yang inspiratif..."
                     required
                     disabled={isSubmitting}
                   />
                   <div className="flex justify-between items-center">
                     <div className="text-sm text-blue-600">
-                      {formData.visi.length > 0 && (
-                        <span className="font-medium">{formData.visi.length} karakter</span>
+                      {formData.content.length > 0 && (
+                        <span className="font-medium">{formData.content.length} karakter</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      {formData.visi.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
-                      <span className={formData.visi.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.visi.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                      {formData.content.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
+                      <span className={formData.content.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
+                        {formData.content.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
                       </span>
                     </div>
                   </div>
                 </div>
-
                 {/* Misi */}
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Target size={18} className="text-blue-600" />
-                    Misi
+                    Category
                   </label>
                   <textarea
                     className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
                     rows={6}
-                    value={formData.misi}
-                    onChange={(e) => handleChange("misi", e.target.value)}
-                    placeholder="✨ Tulis misi departemen mahasiswa yang motivatif..."
+                    value={formData.category}
+                    onChange={(e) => handleChange("category", e.target.value)}
+                    placeholder="✨ Tulis misi News yang motivatif..."
                     required
                     disabled={isSubmitting}
                   />
                   <div className="flex justify-between items-center">
                     <div className="text-sm text-blue-600">
-                      {formData.misi.length > 0 && (
-                        <span className="font-medium">{formData.misi.length} karakter</span>
+                      {formData.category.length > 0 && (
+                        <span className="font-medium">{formData.category.length} karakter</span>
                       )}
                     </div>
                     <div className="flex items-center gap-2 text-sm">
-                      {formData.misi.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
-                      <span className={formData.misi.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.misi.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Misi */}
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
-                    <Target size={18} className="text-blue-600" />
-                    Nilai
-                  </label>
-                  <textarea
-                    className="w-full border-2 border-blue-200 rounded-xl px-4 py-4 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none resize-none bg-blue-50 text-blue-900"
-                    rows={6}
-                    value={formData.nilai}
-                    onChange={(e) => handleChange("nilai", e.target.value)}
-                    placeholder="✨ Tulis misi departemen mahasiswa yang motivatif..."
-                    required
-                    disabled={isSubmitting}
-                  />
-                  <div className="flex justify-between items-center">
-                    <div className="text-sm text-blue-600">
-                      {formData.nilai.length > 0 && (
-                        <span className="font-medium">{formData.nilai.length} karakter</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      {formData.nilai.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
-                      <span className={formData.nilai.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
-                        {formData.nilai.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
+                      {formData.category.length >= 100 && <CheckCircle2 size={16} className="text-green-500" />}
+                      <span className={formData.category.length >= 100 ? "text-green-600 font-medium" : "text-blue-500"}>
+                        {formData.category.length >= 100 ? "✅ Panjang yang baik" : "Minimal 100 karakter"}
                       </span>
                     </div>
                   </div>
@@ -292,7 +237,7 @@ export default function MahasiswaCreatePage() {
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-bold text-blue-900">
                     <Upload size={18} className="text-blue-600" />
-                    Upload Logo Departemen
+                    Upload Logo News
                   </label>
                   <div className="relative">
                     <input
@@ -330,11 +275,11 @@ export default function MahasiswaCreatePage() {
                 <div className="pt-6 border-t-2 border-blue-100">
                   <button
                     onClick={handleSubmit}
-                    disabled={isSubmitting || !formData.nama || !formData.namaSingkat || !formData.visi || !formData.misi}
+                    disabled={isSubmitting || !formData.title || !formData.content || !formData.category}
                     className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                   >
                     <Save size={20} />
-                    {isSubmitting ? "Menyimpan..." : "💾 Simpan Data Departemen"}
+                    {isSubmitting ? "Menyimpan..." : "💾 Simpan Data News"}
                   </button>
                 </div>
               </div>
@@ -344,7 +289,7 @@ export default function MahasiswaCreatePage() {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Preview Card */}
-            {(formData.nama || formData.namaSingkat || formData.visi || formData.misi) && (
+            {(formData.title || formData.content || formData.category) && (
               <div className="bg-white rounded-2xl shadow-lg border-2 border-blue-100 overflow-hidden">
                 <div className="bg-blue-600 p-4">
                   <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -362,27 +307,27 @@ export default function MahasiswaCreatePage() {
                       />
                     </div>
                   )}
-                  {formData.nama && (
+                  {formData.title && (
                     <div className="text-center">
-                      <h4 className="font-bold text-blue-900 text-lg">{formData.nama}</h4>
-                      {formData.namaSingkat && (
-                        <p className="text-blue-600 font-medium text-sm mt-1">({formData.namaSingkat})</p>
+                      <h4 className="font-bold text-blue-900 text-lg">{formData.title}</h4>
+                      {formData.content && (
+                        <p className="text-blue-600 font-medium text-sm mt-1">({formData.content})</p>
                       )}
                     </div>
                   )}
-                  {formData.visi && (
+                  {formData.content && (
                     <div className="bg-blue-50 rounded-lg p-4">
                       <p className="text-blue-700 text-sm leading-relaxed">
                         <strong>Visi:</strong>{" "}
-                        {formData.visi.length > 150 ? formData.visi.substring(0, 150) + "..." : formData.visi}
+                        {formData.content.length > 150 ? formData.content.substring(0, 150) + "..." : formData.content}
                       </p>
                     </div>
                   )}
-                  {formData.misi && (
+                  {formData.category && (
                     <div className="bg-blue-50 rounded-lg p-4">
                       <p className="text-blue-700 text-sm leading-relaxed">
                         <strong>Misi:</strong>{" "}
-                        {formData.misi.length > 150 ? formData.misi.substring(0, 150) + "..." : formData.misi}
+                        {formData.category.length > 150 ? formData.category.substring(0, 150) + "..." : formData.category}
                       </p>
                     </div>
                   )}
@@ -399,22 +344,18 @@ export default function MahasiswaCreatePage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-700">Nama Lengkap</span>
-                  <CheckCircle2 size={16} className={formData.nama ? "text-green-500" : "text-blue-300"} />
+                  <CheckCircle2 size={16} className={formData.title ? "text-green-500" : "text-blue-300"} />
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-700">Nama Singkat</span>
-                  <CheckCircle2 size={16} className={formData.namaSingkat ? "text-green-500" : "text-blue-300"} />
+                  <CheckCircle2 size={16} className={formData.content ? "text-green-500" : "text-blue-300"} />
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-blue-700">Visi</span>
-                  <CheckCircle2 size={16} className={formData.visi ? "text-green-500" : "text-blue-300"} />
+                  <CheckCircle2 size={16} className={formData.category ? "text-green-500" : "text-blue-300"} />
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-700">Misi</span>
-                  <CheckCircle2 size={16} className={formData.misi ? "text-green-500" : "text-blue-300"} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-blue-700">Logo</span>
+                  <span className="text-sm text-blue-700">Gambar</span>
                   <CheckCircle2 size={16} className={formData.gambar ? "text-green-500" : "text-blue-300"} />
                 </div>
               </div>
@@ -425,10 +366,9 @@ export default function MahasiswaCreatePage() {
                   <span>Kelengkapan</span>
                   <span>
                     {Math.round(
-                      ((formData.nama ? 1 : 0) +
-                        (formData.namaSingkat ? 1 : 0) +
-                        (formData.visi ? 1 : 0) +
-                        (formData.misi ? 1 : 0) +
+                      ((formData.title ? 1 : 0) +
+                        (formData.content ? 1 : 0) +
+                        (formData.category ? 1 : 0) +
                         (formData.gambar ? 1 : 0)) /
                         5 *
                         100
@@ -441,10 +381,9 @@ export default function MahasiswaCreatePage() {
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style={{
                       width: `${
-                        ((formData.nama ? 1 : 0) +
-                          (formData.namaSingkat ? 1 : 0) +
-                          (formData.visi ? 1 : 0) +
-                          (formData.misi ? 1 : 0) +
+                        ((formData.title ? 1 : 0) +
+                          (formData.content ? 1 : 0) +
+                          (formData.category ? 1 : 0) +
                           (formData.gambar ? 1 : 0)) /
                         5 *
                         100
