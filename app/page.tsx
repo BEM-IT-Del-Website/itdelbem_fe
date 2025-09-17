@@ -266,7 +266,7 @@ export default function HomePage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-base leading-relaxed mb-4">
-                    {ukm.short_namey}
+                    {ukm.short_name}
                   </CardDescription>
                   <Button className="bg-[#2563EB] hover:bg-blue-600 text-white">Bergabung</Button>
                 </CardContent>

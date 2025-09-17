@@ -12,6 +12,8 @@ interface Mahasiswa {
   current_role?: string;
   current_category?: string;
   current_organization_id?: number;
+  current_organization_shortname?: string;
+  current_position_title?: string;
 }
 
 interface ApiResponse {
@@ -33,6 +35,7 @@ interface ApiResponse {
 interface Organization {
   id: number;
   name: string;
+  shortname?: string;
   type: 'himpunan' | 'ukm' | 'department';
   description?: string;
 }
@@ -152,40 +155,33 @@ const TableContainer: React.FC = () => {
           description: "Membantu ketua himpunan"
         },
         {
-          value: "sekretaris_himpunan",
-          label: "Sekretaris Himpunan",
+          value: "sekretaris_himpunan_1",
+          label: "Sekretaris Himpunan I",
           icon: <Shield className="w-4 h-4" />,
-          color: "from-indigo-500 to-indigo-600",
-          description: "Mengatur administrasi himpunan"
+          color: "from-blue-500 to-blue-600",
+          description: "Mengatur administrasi dan dokumentasi Himpunan"
         },
         {
-          value: "bendahara_himpunan",
-          label: "Bendahara Himpunan",
+          value: "sekretaris_himpunan_2",
+          label: "Sekretaris Himpunan II",
+          icon: <Shield className="w-4 h-4" />,
+          color: "from-blue-400 to-blue-500",
+          description: "Membantu sekretaris I dalam administrasi"
+        },
+        {
+          value: "bendahara_himpunan_1",
+          label: "Bendahara Himpunan I",
           icon: <Award className="w-4 h-4" />,
-          color: "from-cyan-500 to-cyan-600",
-          description: "Mengelola keuangan himpunan"
+          color: "from-green-500 to-green-600",
+          description: "Mengelola keuangan dan anggaran Himpunan"
         },
         {
-          value: "koordinator_akademik",
-          label: "Koordinator Akademik",
-          icon: <UserPlus className="w-4 h-4" />,
-          color: "from-emerald-500 to-emerald-600",
-          description: "Mengkoordinasi kegiatan akademik"
+          value: "bendahara_himpunan_2",
+          label: "Bendahara Himpunan II",
+          icon: <Award className="w-4 h-4" />,
+          color: "from-green-400 to-green-500",
+          description: "Membantu bendahara I dalam pengelolaan keuangan"
         },
-        {
-          value: "koordinator_minat_bakat",
-          label: "Koordinator Minat & Bakat",
-          icon: <UserPlus className="w-4 h-4" />,
-          color: "from-teal-500 to-teal-600",
-          description: "Mengkoordinasi kegiatan minat dan bakat"
-        },
-        {
-          value: "anggota_himpunan",
-          label: "Anggota Himpunan",
-          icon: <CheckCircle className="w-4 h-4" />,
-          color: "from-gray-500 to-gray-600",
-          description: "Anggota aktif himpunan"
-        }
       ]
     },
     {
@@ -209,33 +205,33 @@ const TableContainer: React.FC = () => {
           description: "Membantu ketua UKM"
         },
         {
-          value: "sekretaris_ukm",
-          label: "Sekretaris UKM",
+          value: "sekretaris_ukm_1",
+          label: "Sekretaris UKM I",
           icon: <Shield className="w-4 h-4" />,
-          color: "from-pink-500 to-pink-600",
-          description: "Mengatur administrasi UKM"
+          color: "from-blue-500 to-blue-600",
+          description: "Mengatur administrasi dan dokumentasi UKM"
         },
         {
-          value: "bendahara_ukm",
-          label: "Bendahara UKM",
+          value: "sekretaris_ukm_2",
+          label: "Sekretaris UKM II",
+          icon: <Shield className="w-4 h-4" />,
+          color: "from-blue-400 to-blue-500",
+          description: "Membantu sekretaris I dalam administrasi"
+        },
+        {
+          value: "bendahara_ukm_1",
+          label: "Bendahara UKM I",
           icon: <Award className="w-4 h-4" />,
-          color: "from-rose-500 to-rose-600",
-          description: "Mengelola keuangan UKM"
+          color: "from-green-500 to-green-600",
+          description: "Mengelola keuangan dan anggaran UKM"
         },
         {
-          value: "koordinator_kegiatan",
-          label: "Koordinator Kegiatan",
-          icon: <UserPlus className="w-4 h-4" />,
-          color: "from-violet-500 to-violet-600",
-          description: "Mengkoordinasi kegiatan UKM"
+          value: "bendahara_ukm_2",
+          label: "Bendahara UKM II",
+          icon: <Award className="w-4 h-4" />,
+          color: "from-green-400 to-green-500",
+          description: "Membantu bendahara I dalam pengelolaan keuangan"
         },
-        {
-          value: "anggota_ukm",
-          label: "Anggota UKM",
-          icon: <CheckCircle className="w-4 h-4" />,
-          color: "from-gray-500 to-gray-600",
-          description: "Anggota aktif UKM"
-        }
       ]
     },
     {
@@ -259,33 +255,33 @@ const TableContainer: React.FC = () => {
           description: "Membantu kepala department"
         },
         {
-          value: "sekretaris_department",
-          label: "Sekretaris Department",
+          value: "sekretaris_departemen_1",
+          label: "Sekretaris Departemen I",
           icon: <Shield className="w-4 h-4" />,
-          color: "from-teal-500 to-teal-600",
-          description: "Mengatur administrasi department"
+          color: "from-blue-500 to-blue-600",
+          description: "Mengatur administrasi dan dokumentasi Departemen"
         },
         {
-          value: "bendahara_department",
-          label: "Bendahara Department",
+          value: "sekretaris_departemen_2",
+          label: "Sekretaris Departemen II",
+          icon: <Shield className="w-4 h-4" />,
+          color: "from-blue-400 to-blue-500",
+          description: "Membantu sekretaris I dalam administrasi"
+        },
+        {
+          value: "bendahara_departemen_1",
+          label: "Bendahara Departemen I",
           icon: <Award className="w-4 h-4" />,
-          color: "from-cyan-500 to-cyan-600",
-          description: "Mengelola keuangan department"
+          color: "from-green-500 to-green-600",
+          description: "Mengelola keuangan dan anggaran Departemen"
         },
         {
-          value: "staff_department",
-          label: "Staff Department",
-          icon: <UserPlus className="w-4 h-4" />,
-          color: "from-sky-500 to-sky-600",
-          description: "Staff department"
+          value: "bendahara_departemen_2",
+          label: "Bendahara Departemen II",
+          icon: <Award className="w-4 h-4" />,
+          color: "from-green-400 to-green-500",
+          description: "Membantu bendahara I dalam pengelolaan keuangan"
         },
-        {
-          value: "anggota_department",
-          label: "Anggota Department",
-          icon: <CheckCircle className="w-4 h-4" />,
-          color: "from-gray-500 to-gray-600",
-          description: "Anggota department"
-        }
       ]
     }
   ];
@@ -302,7 +298,7 @@ const TableContainer: React.FC = () => {
 
     try {
       // Fetch Himpunan
-      const himpunanResponse = await fetch("http://localhost:9090/api/association", {
+      const himpunanResponse = await fetch("http://localhost:8080/api/association", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -319,8 +315,8 @@ const TableContainer: React.FC = () => {
     }
 
     // Fetch UKM
-    try{
-      const ukmResponse = await fetch("http://localhost:9090/api/ukm", {
+    try {
+      const ukmResponse = await fetch("http://localhost:8080/api/club", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -337,8 +333,8 @@ const TableContainer: React.FC = () => {
     }
 
     // Fetch Department
-    try{
-      const departmentResponse = await fetch("http://localhost:9090/api/department", {
+    try {
+      const departmentResponse = await fetch("http://localhost:8080/api/department", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -395,7 +391,7 @@ const TableContainer: React.FC = () => {
       }
 
       let res = await fetch(
-        `http://localhost:9090/api/admin/students?${params.toString()}`,
+        `http://localhost:8080/api/admin/students?${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -420,17 +416,24 @@ const TableContainer: React.FC = () => {
   };
 
   // Assign role to student
-  const assignRole = async (studentId: number, role: string, category: string, organizationId?: number) => {
+  const assignRole = async (studentId: number, role: string, category: string, organizationId?: number, organizationShortname?: string, positionTitle?: string) => {
     const token = sessionStorage.getItem("token");
     setAssigningRole(studentId);
 
     try {
-      const requestBody: any = { role, category };
+      const requestBody: any = { 
+        role, 
+        category,
+        position_title: positionTitle || role // Use provided position title or fallback to role
+      };
       if (organizationId) {
         requestBody.organization_id = organizationId;
+        requestBody.organization_shortname = organizationShortname;
       }
 
-      const response = await fetch(`http://localhost:9090/api/admin/students/${studentId}/assign-role`, {
+      console.log("Role yang dikirim:", requestBody);
+
+      const response = await fetch(`http://localhost:8080/api/admin/students/${studentId}/assign-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -442,6 +445,8 @@ const TableContainer: React.FC = () => {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
       const result = await response.json();
+
+      console.log(result.data);
       
       if (result.status === "success") {
         setData(prevData => 
@@ -451,7 +456,9 @@ const TableContainer: React.FC = () => {
                   ...student, 
                   current_role: role, 
                   current_category: category,
-                  current_organization_id: organizationId 
+                  current_organization_id: organizationId,
+                  current_organization_shortname: organizationShortname,
+                  current_position_title: positionTitle || role
                 }
               : student
           )
@@ -534,13 +541,13 @@ const TableContainer: React.FC = () => {
                         <div className={`p-1 rounded bg-gradient-to-r ${currentRoleInfo.role.color} text-white mr-2`}>
                           {currentRoleInfo.role.icon}
                         </div>
-                        <span className="text-sm font-medium">{currentRoleInfo.role.label}</span>
+                        <span className="text-sm font-medium">{student.current_position_title || currentRoleInfo.role.label}</span>
                         <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
                           {currentRoleInfo.category.name}
                         </span>
                         {currentRoleInfo.organization && (
                           <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                            {currentRoleInfo.organization.name}
+                            {student.current_organization_shortname || currentRoleInfo.organization.shortname || currentRoleInfo.organization.name}
                           </span>
                         )}
                       </div>
@@ -583,7 +590,7 @@ const TableContainer: React.FC = () => {
                                 <button
                                   key={role.value}
                                   onClick={() => {
-                                    assignRole(student.id, role.value, category.id);
+                                    assignRole(student.id, role.value, category.id, undefined, undefined, role.label);
                                     onClose();
                                   }}
                                   disabled={assigningRole === student.id}
@@ -618,8 +625,11 @@ const TableContainer: React.FC = () => {
                                       <div className="flex items-center">
                                         <Building className="w-4 h-4 text-gray-500 mr-2" />
                                         <span className="font-medium text-gray-800">{organization.name}</span>
+                                        {organization.shortname && (
+                                          <span className="ml-2 text-sm text-gray-500">({organization.shortname})</span>
+                                        )}
                                         {organization.description && (
-                                          <span className="ml-2 text-sm text-gray-500">({organization.description})</span>
+                                          <span className="ml-2 text-sm text-gray-500"> - {organization.description}</span>
                                         )}
                                       </div>
                                       {expandedOrganization === organization.id ? (
@@ -635,7 +645,7 @@ const TableContainer: React.FC = () => {
                                           <button
                                             key={`${organization.id}-${role.value}`}
                                             onClick={() => {
-                                              assignRole(student.id, role.value, category.id, organization.id);
+                                              assignRole(student.id, role.value, category.id, organization.id, organization.shortname || organization.name, role.label);
                                               onClose();
                                             }}
                                             disabled={assigningRole === student.id}
@@ -710,7 +720,7 @@ const TableContainer: React.FC = () => {
 
   useEffect(() => {
     fetchData(page);
-  }, [page]); // hanya fetch saat page berubah
+  }, [page]);
 
   const handleSearch = () => {
     setPage(1);
@@ -779,44 +789,44 @@ const TableContainer: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-  <label
-    htmlFor="searchName"
-    className="block text-sm font-medium text-gray-700 mb-2"
-  >
-    Nama
-  </label>
-  <div className="relative">
-            <input
-              id="searchName"
-              type="text"
-              value={searchName}
-              onChange={(e) => setSearchName(e.target.value)} // hanya update state
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleSearch(); // pencarian hanya saat Enter
-                }
-              }}
-              placeholder="Cari berdasarkan nama..."
-              className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-            />
-            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg
-                className="w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+            <label
+              htmlFor="searchName"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Nama
+            </label>
+            <div className="relative">
+              <input
+                id="searchName"
+                type="text"
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                placeholder="Cari berdasarkan nama..."
+                className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg
+                  className="w-5 h-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
           <div className="relative">
             <label htmlFor="searchProdi" className="block text-sm font-medium text-gray-700 mb-2">
               Program Studi

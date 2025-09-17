@@ -113,7 +113,7 @@ export default function MahasiswaCreatePage() {
   };
 
   const handleBack = () => {
-    router.push("/admin/mahasiswa");
+    router.push("/admin/ukm");
   };
 
   return (
