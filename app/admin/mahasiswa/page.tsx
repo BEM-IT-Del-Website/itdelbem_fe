@@ -302,7 +302,7 @@ const TableContainer: React.FC = () => {
 
     try {
       // Fetch Himpunan
-      const himpunanResponse = await fetch("http://localhost:8080/api/association", {
+      const himpunanResponse = await fetch("http://localhost:9090/api/association", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -320,7 +320,7 @@ const TableContainer: React.FC = () => {
 
     // Fetch UKM
     try{
-      const ukmResponse = await fetch("http://localhost:8080/api/ukm", {
+      const ukmResponse = await fetch("http://localhost:9090/api/ukm", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -338,7 +338,7 @@ const TableContainer: React.FC = () => {
 
     // Fetch Department
     try{
-      const departmentResponse = await fetch("http://localhost:8080/api/department", {
+      const departmentResponse = await fetch("http://localhost:9090/api/department", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -395,7 +395,7 @@ const TableContainer: React.FC = () => {
       }
 
       let res = await fetch(
-        `http://localhost:8080/api/admin/students?${params.toString()}`,
+        `http://localhost:9090/api/admin/students?${params.toString()}`,
         {
           method: "GET",
           headers: {
@@ -430,7 +430,7 @@ const TableContainer: React.FC = () => {
         requestBody.organization_id = organizationId;
       }
 
-      const response = await fetch(`http://localhost:8080/api/admin/students/${studentId}/assign-role`, {
+      const response = await fetch(`http://localhost:9090/api/admin/students/${studentId}/assign-role`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -710,16 +710,7 @@ const TableContainer: React.FC = () => {
 
   useEffect(() => {
     fetchData(page);
-  }, [page]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setPage(1);
-      fetchData(1);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchName, searchProdi, searchAngkatan]);
+  }, [page]); // hanya fetch saat page berubah
 
   const handleSearch = () => {
     setPage(1);
@@ -788,27 +779,44 @@ const TableContainer: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-            <label htmlFor="searchName" className="block text-sm font-medium text-gray-700 mb-2">
-              Nama
-            </label>
-            <div className="relative">
-              <input
-                id="searchName"
-                type="text"
-                value={searchName}
-                onChange={(e) => setSearchName(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Cari berdasarkan nama..."
-                className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
+  <label
+    htmlFor="searchName"
+    className="block text-sm font-medium text-gray-700 mb-2"
+  >
+    Nama
+  </label>
+  <div className="relative">
+            <input
+              id="searchName"
+              type="text"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)} // hanya update state
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch(); // pencarian hanya saat Enter
+                }
+              }}
+              placeholder="Cari berdasarkan nama..."
+              className="w-full pl-10 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+            />
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+              <svg
+                className="w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
             </div>
           </div>
-
+        </div>
           <div className="relative">
             <label htmlFor="searchProdi" className="block text-sm font-medium text-gray-700 mb-2">
               Program Studi
