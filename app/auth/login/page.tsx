@@ -25,7 +25,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      let res = await fetch('http://localhost:9090/api/auth/campus/login', {
+      let res = await fetch('http://localhost:8080/api/auth/campus/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: email, password }),
@@ -33,7 +33,7 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        res = await fetch('http://localhost:9090/api/auth/login', {
+        res = await fetch('http://localhost:8080/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: email, password }),
@@ -47,14 +47,13 @@ export default function LoginPage() {
       sessionStorage.setItem("refresh_token", data.refresh_token);
       sessionStorage.setItem("user", JSON.stringify(data.user));
 
-      if (data.user.position === 'admin') {
+
+      if (data.position === 'ketua_bem') {
         router.push('/admin/dashboard');
       } else if (data.user.position === 'student') {
         router.push('/student/home');
       } else if (data.user.position === 'lecturer') {
         router.push('/lecturer/home');
-      } else {
-        router.push('/');
       }
 
     } catch (err) {

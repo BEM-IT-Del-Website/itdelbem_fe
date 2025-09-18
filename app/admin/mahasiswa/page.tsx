@@ -433,8 +433,8 @@ const TableContainer: React.FC = () => {
 
       console.log("Role yang dikirim:", requestBody);
 
-      const response = await fetch(`http://localhost:8080/api/admin/students/${studentId}/assign-role`, {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/api/admin/students/${studentId}/assign`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -446,7 +446,6 @@ const TableContainer: React.FC = () => {
 
       const result = await response.json();
 
-      console.log(result.data);
       
       if (result.status === "success") {
         setData(prevData => 
