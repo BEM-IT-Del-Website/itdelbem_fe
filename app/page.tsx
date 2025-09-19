@@ -164,13 +164,144 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Departemen BEM</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Departemen-departemen yang menjalankan program kerja untuk kemajuan mahasiswa IT Del
-            </p>
+    {/* Grid Departemen */}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+      {[
+        { title: "DIPTEK", desc: "Departemen Teknologi dan Informasi", icon: "💻" },
+        { title: "DEPAGSOS", desc: "Departemen Agama dan Sosial", icon: "🤝" },
+        { title: "DEPSENBUD", desc: "Departemen Seni dan Budaya", icon: "🎨" },
+        { title: "DEPKOMINFO", desc: "Departemen Komunikasi dan Informasi", icon: "📢" },
+        { title: "DEPKEBDIS", desc: "Departemen Kebijakan dan Disiplin", icon: "⚖️" },
+        { title: "DPDK", desc: "Departemen Pengembangan Diri dan Karir", icon: "🚀" },
+        { title: "DPHM", desc: "Departemen Pengabdian dan Hubungan Masyarakat", icon: "🌍" },
+        { title: "DEPOL", desc: "Departemen Olahraga", icon: "⚽" },
+        { title: "SARPRAS", desc: "Sarana dan Prasarana", icon: "🏢" },
+      ].map((dept, index) => (
+        <Card 
+          key={index} 
+          className="text-center rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+        >
+          <CardHeader>
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 flex items-center justify-center text-3xl rounded-full bg-gradient-to-br from-blue-100 to-blue-200">
+                {dept.icon}
+              </div>
+            </div>
+            <CardTitle className="text-xl font-bold text-gray-800">{dept.title}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CardDescription className="text-base text-gray-600 leading-relaxed mb-6">
+              {dept.desc}
+            </CardDescription>
+            <Button className="w-30 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-700 hover:to-gray-100 text-blue-900 font-semibold transition-all duration-300">
+              Pelajari
+            </Button>
+
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
+
+
+<section className="py-20 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-12">
+      <div className="flex items-center justify-center text-[#1E3A8A] mb-4">
+        <Calendar className="w-6 h-6 mr-2" />
+        <h2 className="text-4xl font-bold">Kalender Kegiatan</h2>
+      </div>
+      <p className="text-lg text-gray-600 max-w-3xl mx-auto">Jadwal kegiatan organisasi, event, dan kalender penting BEM IT Del.</p>
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Calendar card */}
+      <div className="col-span-2 bg-white border rounded-2xl shadow-sm p-6">
+        <div className="w-full rounded-lg bg-gray-50 p-6">
+          {/* Simple calendar placeholder */}
+          <div className="w-full bg-white rounded-lg p-6 shadow-inner">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-lg font-semibold">September 2025</div>
+              <div className="flex items-center space-x-2">
+                <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">◀</button>
+                <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">▶</button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 text-center text-sm text-gray-600">
+              {['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d) => (
+                <div key={d} className="font-medium text-xs text-gray-400">{d}</div>
+              ))}
+
+              {/* placeholder empty cells for days before month start (simple fixed layout) */}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={`empty-${i}`} className="h-16 border rounded-md bg-gray-50" />
+              ))}
+
+              {/* placeholder days 1..25 */}
+              {Array.from({ length: 25 }).map((_, i) => (
+                <div key={`day-${i+1}`} className="h-16 border rounded-md flex items-start justify-start p-2 text-sm">
+                  <div className="w-6 h-6 text-xs font-semibold text-gray-700">{i+1}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Legend / info column */}
+      <div className="bg-white border rounded-2xl shadow-sm p-6">
+        <h3 className="text-lg font-semibold mb-4">Legenda</h3>
+        <ul className="space-y-3">
+          <li className="flex items-center">
+            <span className="inline-block w-3 h-3 bg-blue-500 rounded-full mr-3" /> Event BEM
+          </li>
+          <li className="flex items-center">
+            <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-3" /> Workshop / Seminar
+          </li>
+          <li className="flex items-center">
+            <span className="inline-block w-3 h-3 bg-yellow-400 rounded-full mr-3" /> Pengumuman Penting
+          </li>
+        </ul>
+
+        <div className="mt-6">
+          <Button className="w-full bg-[#3B82F6] text-white">Lihat Kalender Lengkap</Button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+{/* Himpunan Mahasiswa Section */}
+<section className="py-20 bg-white">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="text-center mb-16">
+      <h2 className="text-4xl font-bold text-[#1E3A8A] mb-4">Himpunan Mahasiswa</h2>
+      <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+        Organisasi mahasiswa berdasarkan program studi di Institut Teknologi Del
+      </p>
+    </div>
+
+    {/* Grid Himpunan */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {[
+        { kode: "HIMTI", nama: "HIMASTI", desc: "Himpunan Mahasiswa Teknik Informatika" },
+        { kode: "HIMSI", nama: "HIMSI", desc: "Himpunan Mahasiswa Sistem Informasi" },
+        { kode: "HME", nama: "HME", desc: "Himpunan Mahasiswa Teknik Elektro" },
+        { kode: "HIMAMERA", nama: "HIMAMERA", desc: "Himpunan Mahasiswa Manajemen Rekayasa" },
+        { kode: "HIMATERA", nama: "HIMATERA", desc: "Himpunan Mahasiswa Teknologi Rekayasa Perangkat Lunak" },
+        { kode: "HIMAMETAL", nama: "HIMAMETAL", desc: "Himpunan Mahasiswa Teknik Metalurgi" },
+        { kode: "HIMATIF", nama: "HIMATIF", desc: "Himpunan Mahasiswa Teknologi Informasi" },
+        { kode: "HIMATEK", nama: "HIMATEK", desc: "Himpunan Mahasiswa Teknologi Komputer" },
+      ].map((hmj, index) => (
+        <Card key={index} className="flex items-center p-6 hover:shadow-lg transition-shadow duration-300">
+          <div className="flex-shrink-0">
+            <div className="w-20 h-20 flex items-center justify-center rounded-full bg-[#3B82F6] text-white font-bold text-sm">
+              {hmj.kode}
+            </div>
           </div>
 
           {/* Grid Departemen */}
