@@ -9,7 +9,7 @@ import {
   Settings,
   Target,
   Users,
-  Image as ImageIcon, // ✅ rename supaya tidak bentrok dengan window.Image
+  Image as ImageIcon,
 } from "lucide-react";
   // Static data
   export const staticData = {
@@ -82,14 +82,13 @@ himpunan: [
 
 export const menuItems = [
   { key: "dashboard", label: "Dashboard", icon: Home, path: "/admin/dashboard" },
-  { key: "visiMisi", label: "Visi & Misi", icon: Target, path: "/admin/visimisi" },
-  { key: "profile", label: "Profile", icon: Settings, path: "/admin/profile" },
   { key: "mahasiswa", label: "Mahasiswa", icon: Users, path: "/admin/mahasiswa" },
   { key: "himpunan", label: "Himpunan Mahasiswa", icon: GraduationCap, path: "/admin/himpunan" },
-  { key: "organisasi", label: "Organisasi", icon: Building, path: "/admin/organisasi" },
+  { key: "ukm", label: "UKM", icon: BookOpen, path: "/admin/ukm" },
+  { key: "departement", label: "Departemen", icon: Briefcase, path: "/admin/department" },
   { key: "galeri", label: "Galeri", icon: ImageIcon, path: "/admin/galery" }, 
   { key: "berita", label: "Berita", icon: Newspaper, path: "/admin/news" },
   { key: "pengumuman", label: "Pengumuman", icon: Megaphone, path: "/admin/announcement" },
-  { key: "ukm", label: "UKM", icon: BookOpen, path: "/admin/ukm" },
-  { key: "departemen", label: "Departemen", icon: Briefcase, path: "/admin/departmen" },
+  // { key: "visiMisi", label: "Visi & Misi", icon: Target, path: "/admin/visimisi" },
+  // { key: "profile", label: "Profile", icon: Settings, path: "/admin/profile" },
 ];
