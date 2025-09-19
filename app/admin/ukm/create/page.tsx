@@ -133,15 +133,15 @@ export default function MahasiswaCreatePage() {
           <div className="flex items-center gap-4 mb-2">
             <div className="relative">
               <div className="p-4 bg-blue-600 rounded-2xl shadow-lg">
-                <Building2 className="text-white" size={32} />
+                <Activity className="text-white" size={32} />
               </div>
               <div className="absolute -top-1 -right-1 p-1 bg-white rounded-full shadow-md">
-                <Zap size={16} className="text-blue-600" />
+                <Star size={16} className="text-blue-600" />
               </div>
             </div>
             <div>
               <h1 className="text-3xl font-bold text-blue-900">Tambah Data UKM</h1>
-              <p className="text-blue-600">Buat data UKM mahasiswa baru</p>
+              <p className="text-blue-600">Buat data Unit Kegiatan Mahasiswa baru</p>
             </div>
           </div>
         </div>
