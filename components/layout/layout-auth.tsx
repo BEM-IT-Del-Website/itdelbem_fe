@@ -11,7 +11,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   const isHiddenLayout =
     pathname.startsWith("/auth") ||
     pathname.startsWith("/register") ||
-    pathname.startsWith("/admin");
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/bem");
 
   return (
     <div className="min-h-screen flex flex-col">
