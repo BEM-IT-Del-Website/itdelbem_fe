@@ -43,7 +43,7 @@ export default function AdminLayout({
       return;
     }
 
-    if (user.position !== "admin") {
+    if (user.position !== "bem") {
       if (user.position === "student") {
         router.push("/student/home");
       } else if (user.position === "lecturer") {

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, ChevronRight, Sparkles } from "lucide-react";
 import React, { useState } from "react";
-import { menuItems } from "@/constants/data";
+import { menuItemsbem } from "@/constants/data";
+
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -93,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       {/* Menu */}
       <div className="relative z-10 flex-1 p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-blue-100">
         <nav className={`space-y-${sidebarOpen ? '4' : '3'}`}>
-          {menuItems.map((item, index) => {
+          {menuItemsbem.map((item, index) => {
             const IconComponent = item.icon;
             const isActive = pathname.startsWith(item.path);
             const isHovered = hoveredItem === item.key;
