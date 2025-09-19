@@ -48,7 +48,7 @@ export default function LoginPage() {
       sessionStorage.setItem("user", JSON.stringify(data.user));
 
 
-      if (data.position === 'ketua_bem') {
+      if (data.user.position === 'admin') {
         router.push('/admin/dashboard');
       } else if (data.user.position === 'student') {
         router.push('/student/home');

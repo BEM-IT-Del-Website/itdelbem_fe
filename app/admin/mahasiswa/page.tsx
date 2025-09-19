@@ -504,7 +504,7 @@ const TableContainer: React.FC = () => {
   }) => {
     const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
     const [expandedOrganization, setExpandedOrganization] = useState<number | null>(null);
-    const [selectedPeriod, setSelectedPeriod] = useState<string>(availablePeriods.find(p => p.isActive)?.value || availablePeriods[0]?.value || "");
+    const [selectedPeriod, setSelectedPeriod] = useState<string>(availablePeriods.find(p => p)?.value || availablePeriods[0]?.value || "");
 
     if (!isOpen || !student) return null;
 
