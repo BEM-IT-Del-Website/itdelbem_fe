@@ -47,14 +47,13 @@ export default function LoginPage() {
       sessionStorage.setItem("refresh_token", data.refresh_token);
       sessionStorage.setItem("user", JSON.stringify(data.user));
 
-      if (data.user.position === 'admin') {
+
+      if (data.position === 'ketua_bem') {
         router.push('/admin/dashboard');
       } else if (data.user.position === 'student') {
         router.push('/student/home');
       } else if (data.user.position === 'lecturer') {
         router.push('/lecturer/home');
-      } else {
-        router.push('/');
       }
 
     } catch (err) {
